@@ -7,8 +7,8 @@ import javax.swing.JPanel;
 
 import com.gamelanlabs.chimple2.core.ChimpleProgram;
 import com.gamelanlabs.chimple2.core.CostFunction;
+import com.gamelanlabs.chimple2.core.SolverFactory;
 import com.gamelanlabs.chimple2.solvers.MetropolisHastingsSolver;
-import com.gamelanlabs.chimple2.solvers.PriorSolver;
 import com.gamelanlabs.chimple2.solvers.Solver;
 
 
@@ -109,15 +109,13 @@ public abstract class Demo extends ChimpleProgram {
 			cf = program.getDefaultCostFunction();
 		}
 		if(args.length > 0) {
-			switch(args[0]) {
-			case "forward":
-				return new PriorSolver(program, program.getDefaultArguments(), cf);
-			case "tracemh":
-				return new MetropolisHastingsSolver(program, program.getDefaultArguments(), cf);
-			default:
+			Solver s = SolverFactory.solverFromString(args[0], program,
+					program.getDefaultArguments(), cf);
+			if(s == null) {
 				System.err.println("Unknown solver '"+args[0]+"'.");
 				System.exit(1);
 			}
+			return s;
 		}
 		return program.getDefaultSolver(program, program.getDefaultArguments(), cf);
 	}
