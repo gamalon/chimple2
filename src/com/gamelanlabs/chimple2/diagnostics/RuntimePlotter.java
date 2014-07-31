@@ -112,7 +112,7 @@ public class RuntimePlotter {
 						p = null;
 					} catch (InstantiationException | IllegalAccessException |
 							NoSuchMethodException | InvocationTargetException e) {
-						throw new RuntimeException(e);
+						e.printStackTrace();
 					}
 			}
 		};
