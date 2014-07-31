@@ -32,7 +32,8 @@ public class MatlabMetropolisHastingsSolver extends MetropolisHastingsSolver {
 	 * Overrides MetropolisHastingsSolver::accept
 	 */
 	@Override
-	public void accept() {
+	public void accept(boolean save) {
+		if(!save) return;
 		try {
 			// Save last result in MATLAB
 			Matlab.mtEval("chimplify_internal_results = [chimplify_internal_results, lastresult];");
@@ -56,7 +57,8 @@ public class MatlabMetropolisHastingsSolver extends MetropolisHastingsSolver {
 	 * Overrides MetropolisHastingsSolver::reject
 	 */
 	@Override
-	public void reject() {
+	public void reject(boolean save) {
+		if(!save) return;
 		try {
 			Matlab.mtEval(
 					"chimplify_internal_results{end+1} = chimplify_internal_results{end};");

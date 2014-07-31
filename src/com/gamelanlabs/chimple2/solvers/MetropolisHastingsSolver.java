@@ -134,14 +134,14 @@ public class MetropolisHastingsSolver extends Solver {
 		// Accept/reject
 		if(rand <= acceptanceratio) {
 			// Accept
-			accept();
+			accept(save);
 			lastenergy = energy;
 			lastresult = result;
 			
 			if(verbose_tracemh_steps) System.out.println("Accept\n");
 		} else {
 			// Reject
-			reject();
+			reject(save);
 			zookeeper.cage = oldcage;
 			
 			if(verbose_tracemh_steps) System.out.println("Reject\n");
@@ -161,12 +161,12 @@ public class MetropolisHastingsSolver extends Solver {
 	/**
 	 * Hook for subclasses.
 	 */
-	protected void accept() {}
+	protected void accept(boolean save) {}
 	
 	/**
 	 * Hook for subclasses.
 	 */
-	protected void reject() {}
+	protected void reject(boolean save) {}
 	
 	/**
 	 * Derive a traceMH proposal move from the current cage.
