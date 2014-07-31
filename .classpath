@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="output" path="bin"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="external-libs/commons-lang3-3.3.2.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/chimplecrowd/external-libs/commons-lang3-3.3.2-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/chimple2/external-libs/commons-lang3-3.3.2-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="external-libs/commons-math3-3.3.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/chimplecrowd/external-libs/commons-math3-3.3-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/chimple2/external-libs/commons-math3-3.3-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="external-libs/jcommon-1.0.21.jar"/>
 	<classpathentry kind="lib" path="external-libs/jfreechart-1.0.17.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Ben/Dropbox/root/Code/gamelan/processing-2.2.1/core/library/core.jar"/>
 	<classpathentry kind="lib" path="F:/Programs/MATLAB/java/jar/jmi.jar"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
