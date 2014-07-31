@@ -29,44 +29,55 @@ public class MatlabMetropolisHastingsSolver extends MetropolisHastingsSolver {
 	}
 	
 	/**
-	 * Overrides MetropolisHastingsSolver::accept
+	 * Overrides MetropolisHastingsSolver::accept.
 	 */
 	@Override
 	public void accept(boolean save) {
-		if(!save) return;
 		try {
-			// Save last result in MATLAB
-			Matlab.mtEval("chimplify_internal_results = [chimplify_internal_results, lastresult];");
-			
-			// Push last energy to MATLAB
-			if(lastenergy == Double.POSITIVE_INFINITY) {
-				Matlab.mtEval("chimplify_internal_likelihoods = [chimplify_internal_likelihoods, Inf]");
-			} else if(lastenergy == Double.NEGATIVE_INFINITY) {
-				Matlab.mtEval("chimplify_internal_likelihoods = [chimplify_internal_likelihoods, -Inf]");
-			} else if(lastenergy == Double.NaN) {
-				Matlab.mtEval("chimplify_internal_likelihoods = [chimplify_internal_likelihoods, NaN];");
-			} else {
-				Matlab.mtEval(String.format("chimplify_internal_likelihoods = [chimplify_internal_likelihoods, %f];",lastenergy));
-			}
+			Matlab.mtEval("last_accepted_result = last_result;");
+			Matlab.mtEval("last_accepted_likelihood = " +
+					doubleToMatlab(lastenergy) + ";");
+		} catch(Exception e) {}
+		
+		if(save) saveLastAcceptedResult();
+	}
+	
+	/**
+	 * Overrides MetropolisHastingsSolver::reject.
+	 */
+	@Override
+	public void reject(boolean save) {
+		if(save) saveLastAcceptedResult();
+	}
+	
+	/**
+	 * Saves the last accepted result in MATLAB.
+	 */
+	protected void saveLastAcceptedResult() {
+		try {
+			Matlab.mtEval(
+					"chimplify_internal_results{end+1} = last_accepted_result;");
+			Matlab.mtEval(
+					"chimplify_internal_likelihoods{end+1} = last_accepted_likelihood;");
 		} catch(Exception e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
 	}
 	
 	/**
-	 * Overrides MetropolisHastingsSolver::reject
+	 * Converts a double to a MATLAB double string.
+	 * 
+	 * @param	d
+	 * @return	str
 	 */
-	@Override
-	public void reject(boolean save) {
-		if(!save) return;
-		try {
-			Matlab.mtEval(
-					"chimplify_internal_results{end+1} = chimplify_internal_results{end};");
-			Matlab.mtEval(
-					"chimplify_internal_likelihoods{end+1} = chimplify_internal_likelihoods{end};");
-		} catch(Exception e) {
-			throw new RuntimeException(e);
-		}
+	protected String doubleToMatlab(double d) {
+		if(d == Double.POSITIVE_INFINITY) {
+			return "Inf";
+		} else if(d == Double.NEGATIVE_INFINITY) {
+			return "-Inf";
+		} else if(d == Double.NaN) {
+			return "NaN";
+		} else return Double.toString(d);
 	}
 
 }

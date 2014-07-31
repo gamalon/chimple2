@@ -1,8 +1,8 @@
 % Harness for RandomCoin
 % Author: BenL
 burnin = 100;
-samples = 500;
-spacing = 1;
+samples = 1000;
+spacing = 2;
 
 % Run traceMH
 out = cell2mat(chimplify(@RandomCoin, {}, burnin, samples, spacing));

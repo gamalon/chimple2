@@ -56,13 +56,11 @@ public class MatlabChimpleProgram extends ChimpleProgram {
 	@Override
 	public Object run(Object ... args) {
 		try {
-			String call = String.format(
-					"lastresult = %s(chimplify_internal_args{:});",
-					matlabcallback);
-			Matlab.mtEval(call);
-			return PLACEHOLDER_RESULT;
+			Matlab.mtEval("last_result = " + matlabcallback + 
+					"(chimplify_internal_args{:});");
 		} catch(Exception e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
+		return PLACEHOLDER_RESULT;
 	}
 }
