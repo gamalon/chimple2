@@ -29,9 +29,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 import org.apache.commons.lang3.ClassUtils;
-import org.apache.commons.lang3.reflect.ConstructorUtils;
 
 import com.gamelanlabs.chimple2.core.ChimpleProgram;
+import com.gamelanlabs.chimple2.core.SolverFactory;
 import com.gamelanlabs.chimple2.solvers.Solver;
 import com.gamelanlabs.chimple2.util.StreamCapture;
 
@@ -117,7 +117,10 @@ public class DemoChooser extends JFrame {
 		pnlSettings.add(rigidArea);
 		
 		JPanel pnlSolver = new JPanel();
-		pnlSolver.setBorder(new CompoundBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), new EmptyBorder(5, 5, 5, 5)));
+		pnlSolver.setBorder(new CompoundBorder(
+				new EtchedBorder(EtchedBorder.LOWERED, null, null),
+				new EmptyBorder(5, 5, 5, 5)
+			));
 		pnlSettings.add(pnlSolver);
 		pnlSolver.setLayout(new BoxLayout(pnlSolver, BoxLayout.Y_AXIS));
 		
@@ -125,10 +128,8 @@ public class DemoChooser extends JFrame {
 		solverName.setMaximumSize(new Dimension(32767, 20));
 		solverName.setAlignmentY(Component.TOP_ALIGNMENT);
 		pnlSolver.add(solverName);
-		solverName.setModel(new DefaultComboBoxModel<String>(new String[] {
-				"MetropolisHastingsSolver",
-				"PriorSolver"
-			}));
+		solverName.setModel(new DefaultComboBoxModel<String>(
+				SolverFactory.getFriendlyNames()));
 		solverName.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -192,10 +193,9 @@ public class DemoChooser extends JFrame {
 		String solverStr = (String) solverName.getSelectedItem();
 		String[] optionNames = new String[] {};
 		String[] optionDefaults = new String[] {};
+		Class<?> solverClass = SolverFactory.solverFromFriendlyName(
+				solverStr, new Dummy(), null, null).getClass();
 		try {
-			Class<?> solverClass = Class.forName(
-					"com.gamelanlabs.chimple2.solvers." + solverStr);
-			
 			Method method = solverClass.getMethod("getArgumentNames");
 			optionNames = (String[]) method.invoke(null);
 			
@@ -301,9 +301,9 @@ public class DemoChooser extends JFrame {
 		
 		// Get types
 		Class<?>[] paramTypes = new Class<?>[0];
+		Class<?> solverClass = SolverFactory.solverFromFriendlyName(
+				solverStr, new Dummy(), null, null).getClass();
 		try {
-			Class<?> solverClass = Class.forName(
-					"com.gamelanlabs.chimple2.solvers." + solverStr);
 			boolean success = false;
 			for(Method m : solverClass.getMethods()) {
 				paramTypes = ClassUtils.primitivesToWrappers(m.getParameterTypes());
@@ -350,23 +350,33 @@ public class DemoChooser extends JFrame {
 		System.out.printf("Chimplifying %s with %s...\n\n",
 				programStr, solverStr);
 		btnRun.setEnabled(false);
-		try {
-			Class<?> solverClass = Class.forName(
-					"com.gamelanlabs.chimple2.solvers." + (String)
-					solverName.getSelectedItem());
-			activeSolver = (Solver) ConstructorUtils.invokeConstructor(solverClass,
-					new Object[] {activeProgram, activeProgram.getDefaultArguments(),
-					activeProgram.getDefaultCostFunction()});
-			ChimpleProgram.tic();
-			ArrayList<Object> results = Demo.callSolve(activeSolver,
-					getSolverArguments());
-			ChimpleProgram.tocPrint();
-			activeProgram.display(results);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		activeSolver = SolverFactory.solverFromFriendlyName(
+				solverStr,
+				activeProgram,
+				activeProgram.getDefaultArguments(),
+				activeProgram.getDefaultCostFunction());
+		
+		ChimpleProgram.tic();
+		ArrayList<Object> results = Demo.callSolve(activeSolver,
+				getSolverArguments());
+		ChimpleProgram.tocPrint();
+		activeProgram.display(results);
+		
 		System.out.print("Done!\n\n");
 		btnRun.setEnabled(true);
+	}
+	
+	/**
+	 * Dummy ChimpleProgram.
+	 * 
+	 * @author BenL
+	 *
+	 */
+	protected static class Dummy extends ChimpleProgram {
+		@Override
+		public Object run(Object... args) {
+			return null;
+		}
 	}
 	
 	/**

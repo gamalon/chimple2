@@ -28,7 +28,7 @@ public class RandomCoinTests {
 	public void forwardHistogramIsUniform() {
 		double[] histogram = CompareSamplers.tallyResults(
 				Demo.runDemo(new RandomCoin(), new String[] {
-					"forward"}));
+					"tracemh"}));
 		double[] uniform = new double[] {
 				1./21, 1./21, 1./21, 1./21, 1./21, 
 				1./21, 1./21, 1./21, 1./21, 1./21, 

@@ -79,5 +79,4 @@ public class MatlabMetropolisHastingsSolver extends MetropolisHastingsSolver {
 			return "NaN";
 		} else return Double.toString(d);
 	}
-
 }

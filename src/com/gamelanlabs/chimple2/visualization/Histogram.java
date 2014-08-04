@@ -82,7 +82,7 @@ public class Histogram extends JFrame {
 			
 			yAxis.setBase(10);
 			yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-			yAxis.setNumberFormatOverride(new DecimalFormat());
+			yAxis.setNumberFormatOverride(new DecimalFormat("###,###,###,##0.######"));
 			yAxis.setLabelFont(old.getLabelFont());
 			yAxis.setTickLabelFont(old.getTickLabelFont());
 			yAxis.setLabelPaint(old.getLabelPaint());

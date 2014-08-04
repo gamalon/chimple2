@@ -19,12 +19,12 @@ public class MetropolisHastingsSolver extends Solver {
 	/**
 	 * Energy of last accepted sample.
 	 */
-	protected double lastenergy = Double.POSITIVE_INFINITY;
+	public double lastenergy = Double.POSITIVE_INFINITY;
 	
 	/**
 	 * Result set of last accepted sample.
 	 */
-	protected Object lastresult = null;
+	public Object lastresult = null;
 	
 	/**
 	 * Print messages on each traceMH step describing which monkey was resampled,
