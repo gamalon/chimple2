@@ -64,7 +64,9 @@ public abstract class ChimpleProgram implements Cloneable {
 	public ChimpleProgram clone() {
 		try {
 			ChimpleProgram p = (ChimpleProgram) super.clone();
-			p.zookeeper = new Zookeeper();
+			
+			// Wipe the zookeeper
+			p.zookeeper = null;
 			return p;
 		} catch (CloneNotSupportedException e) {
 			// No reason this should ever happen
