@@ -238,8 +238,8 @@ public class Anisotropic extends Demo {
 	@Override
 	public Object run(Object... args) {
 		double[] x = new double[2];
-		x[0] = chimpRand("u0")*2 - 1;
-		x[1] = chimpRand("u1")*2 - 1;
+		x[0] = chimpRand("u0")*4 - 2;
+		x[1] = chimpRand("u1")*4 - 2;
 		addEnergy(pdf(x));
 		updatePosition(x);
 		return x;
