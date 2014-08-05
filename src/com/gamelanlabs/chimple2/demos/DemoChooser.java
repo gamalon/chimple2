@@ -27,6 +27,7 @@ import javax.swing.UIManager;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 
 import org.apache.commons.lang3.ClassUtils;
 
@@ -72,7 +73,15 @@ public class DemoChooser extends JFrame {
 		pnlSettings.setLayout(new BoxLayout(pnlSettings, BoxLayout.X_AXIS));
 		
 		JPanel pnlProgram = new JPanel();
-		pnlProgram.setBorder(new CompoundBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), new EmptyBorder(5, 5, 5, 5)));
+		pnlProgram.setBorder(
+				new TitledBorder(
+						new CompoundBorder(
+								new EtchedBorder(EtchedBorder.LOWERED, null, null),
+								new EmptyBorder(5, 5, 5, 5)
+							), 
+						"Program"
+					)
+			);
 		pnlSettings.add(pnlProgram);
 		
 		programName = new JComboBox<String>();
@@ -118,10 +127,15 @@ public class DemoChooser extends JFrame {
 		pnlSettings.add(rigidArea);
 		
 		JPanel pnlSolver = new JPanel();
-		pnlSolver.setBorder(new CompoundBorder(
-				new EtchedBorder(EtchedBorder.LOWERED, null, null),
-				new EmptyBorder(5, 5, 5, 5)
-			));
+		pnlSolver.setBorder(
+				new TitledBorder(
+						new CompoundBorder(
+								new EtchedBorder(EtchedBorder.LOWERED, null, null),
+								new EmptyBorder(5, 5, 5, 5)
+							), 
+						"Solver"
+					)
+			);
 		pnlSettings.add(pnlSolver);
 		pnlSolver.setLayout(new BoxLayout(pnlSolver, BoxLayout.Y_AXIS));
 		
