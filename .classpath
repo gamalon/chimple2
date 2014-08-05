@@ -17,5 +17,16 @@
 	<classpathentry kind="lib" path="external-libs/jfreechart-1.0.17.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Ben/Dropbox/root/Code/gamelan/processing-2.2.1/core/library/core.jar"/>
 	<classpathentry kind="lib" path="F:/Programs/MATLAB/java/jar/jmi.jar"/>
+	<classpathentry kind="lib" path="external-libs/jzy3d-api-0.9.1.jar"/>
+	<classpathentry kind="lib" path="external-libs/jogl-all.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="chimple2/external-libs"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="external-libs/gluegen-rt.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="chimple2/external-libs"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

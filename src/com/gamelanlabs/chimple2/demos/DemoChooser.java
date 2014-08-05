@@ -85,7 +85,8 @@ public class DemoChooser extends JFrame {
 				"RandomCoin",
 				"LatentDirichletAllocation",
 				"StochasticBlockModel",
-				"Bits"
+				"Bits",
+				"Anisotropic"
 			}));
 		programName.addActionListener(new ActionListener() {
 			@Override
