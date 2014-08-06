@@ -50,7 +50,7 @@ xml = """<?xml version="1.0" encoding="UTF-8"?>
     </classpathentry>
 """
 
-if osname is "Windows":
+if osname == "Windows":
     notice("Searching for MATLAB JMI library...")
     folders = (glob.glob("%ProgramFiles(x86)%\MATLAB*")
                + glob.glob("%ProgramW6432%\MATLAB*")
@@ -71,7 +71,7 @@ if osname is "Windows":
     # I don't think Processing has a default install directory on Windows?
     warning("Could not find Processing library; you will have to add it manually.")
     
-elif osname is "Darwin":
+elif osname == "Darwin":
     home = os.path.expanduser("~")
     
     notice("Searching for MATLAB JMI library...")
