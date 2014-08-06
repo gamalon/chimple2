@@ -174,7 +174,7 @@ public class CompareSamplers extends Demo {
 	@Override
 	public JPanel getSettingsPanel() {
 		JPanel panel = new JPanel();
-		panel.add(new JLabel("<html><body style='width: 125px'>" +
+		panel.add(new JLabel("<html><body style='width: 100px'>" +
 				"This demo is not a probabilistic program itself!" +
 				"<br /><br />Your solver choice will have no effect on output. " +
 				"<br /><br />To run, click the Compare button.</html></body>"));

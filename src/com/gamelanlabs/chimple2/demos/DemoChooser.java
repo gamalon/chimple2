@@ -3,6 +3,7 @@ package com.gamelanlabs.chimple2.demos;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintStream;
@@ -21,8 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -51,6 +50,7 @@ public class DemoChooser extends JFrame {
 	protected JTextField[] txtFields;
 	protected JComboBox<String> solverName;
 	protected JComboBox<String> programName;
+	protected JPanel pnlProgramSolver;
 	protected JPanel pnlProgramOptions;
 	protected JPanel pnlSolverOptions;
 	
@@ -72,6 +72,10 @@ public class DemoChooser extends JFrame {
 		getContentPane().add(pnlSettings, BorderLayout.NORTH);
 		pnlSettings.setLayout(new BoxLayout(pnlSettings, BoxLayout.X_AXIS));
 		
+		pnlProgramSolver = new JPanel();
+		pnlProgramSolver.setLayout(new GridLayout(1, 2, 0, 0));
+		pnlSettings.add(pnlProgramSolver);
+		
 		JPanel pnlProgram = new JPanel();
 		pnlProgram.setBorder(
 				new TitledBorder(
@@ -82,7 +86,7 @@ public class DemoChooser extends JFrame {
 						"Program"
 					)
 			);
-		pnlSettings.add(pnlProgram);
+		pnlProgramSolver.add(pnlProgram);
 		
 		programName = new JComboBox<String>();
 		programName.setMaximumSize(new Dimension(32767, 20));
@@ -100,12 +104,7 @@ public class DemoChooser extends JFrame {
 		programName.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						updateProgramPanel();
-					}
-				});
+				updateProgramPanel();
 			}  
 		});
 		pnlProgram.setLayout(new BoxLayout(pnlProgram, BoxLayout.Y_AXIS));
@@ -136,7 +135,7 @@ public class DemoChooser extends JFrame {
 						"Solver"
 					)
 			);
-		pnlSettings.add(pnlSolver);
+		pnlProgramSolver.add(pnlSolver);
 		pnlSolver.setLayout(new BoxLayout(pnlSolver, BoxLayout.Y_AXIS));
 		
 		solverName = new JComboBox<String>();
@@ -148,12 +147,7 @@ public class DemoChooser extends JFrame {
 		solverName.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						updateSolverPanel();
-					}
-				});
+				updateSolverPanel();
 			}  
 		});
 		
@@ -176,13 +170,20 @@ public class DemoChooser extends JFrame {
 		btnRun.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				(new SwingWorker<Void, Void>() {
+				new Thread() {
 					@Override
-					public Void doInBackground() {
+					public void run() {
+						btnRun.setEnabled(false);
+						programName.setEnabled(false);
+						solverName.setEnabled(false);
+						disablePanels();
 						chimplify();
-						return null;
+						enablePanels();
+						btnRun.setEnabled(true);
+						programName.setEnabled(true);
+						solverName.setEnabled(true);
 					}
-				}).execute();
+				}.start();
 			}
 		});
 		getRootPane().setDefaultButton(btnRun);
@@ -353,6 +354,63 @@ public class DemoChooser extends JFrame {
 	}
 	
 	/**
+	 * List of components that have already been disabled
+	 */
+	protected ArrayList<Component> alreadyDisabled;
+	
+	/**
+	 * Disables user interface elements (so that they cannot
+	 * be changed during a run).
+	 */
+	public void disablePanels() {
+		alreadyDisabled = new ArrayList<Component>();
+		recursivelyDisable(pnlProgramOptions);
+		recursivelyDisable(pnlSolverOptions);
+	}
+	
+	/**
+	 * Enables user interface elements, except for those
+	 * which were already disabled before the run.
+	 */
+	public void enablePanels() {
+		recursivelyEnable(pnlProgramOptions);
+		recursivelyEnable(pnlSolverOptions);
+		alreadyDisabled = null;
+	}
+	
+	/**
+	 * Recurses through JPanels, disabling components.
+	 * 
+	 * @param	p
+	 */
+	protected void recursivelyDisable(JPanel p) {
+		for(Component c : p.getComponents()) {
+			if(c.getClass().equals(JPanel.class)) {
+				recursivelyDisable((JPanel) c);
+			} else if(!p.isEnabled()) {
+				alreadyDisabled.add(p);
+			} else {
+				c.setEnabled(false);
+			}
+		}
+	}
+	
+	/**
+	 * Recurses through JPanels, enabling components.
+	 * 
+	 * @param	p
+	 */
+	protected void recursivelyEnable(JPanel p) {
+		for(Component c : p.getComponents()) {
+			if(c.getClass().equals(JPanel.class)) {
+				recursivelyEnable((JPanel) c);
+			} else if(!alreadyDisabled.contains(c)) {
+				c.setEnabled(true);
+			}
+		}
+	}
+	
+	/**
 	 * Runs the selected solver with the selected program and the settings
 	 * entered for both.
 	 */
@@ -364,7 +422,6 @@ public class DemoChooser extends JFrame {
 		String solverStr = (String) solverName.getSelectedItem();
 		System.out.printf("Chimplifying %s with %s...\n\n",
 				programStr, solverStr);
-		btnRun.setEnabled(false);
 		activeSolver = SolverFactory.solverFromFriendlyName(
 				solverStr,
 				activeProgram,
@@ -378,7 +435,6 @@ public class DemoChooser extends JFrame {
 		activeProgram.display(results);
 		
 		System.out.print("Done!\n\n");
-		btnRun.setEnabled(true);
 	}
 	
 	/**
