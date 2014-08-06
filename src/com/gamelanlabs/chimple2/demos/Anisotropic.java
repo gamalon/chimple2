@@ -45,8 +45,9 @@ import org.jzy3d.plot3d.rendering.canvas.Quality;
 public class Anisotropic extends Demo {
 	protected double epsilon;
 	protected boolean gui = false;
-	protected JLabel pct;
+	protected JFrame frame;
 	protected Chart chart;
+	protected JLabel pct;
 	protected Point lastpoint;
 	protected int good;
 	protected int bad;
@@ -128,7 +129,7 @@ public class Anisotropic extends Demo {
 		panel.add((Component) chart.getCanvas(), BorderLayout.CENTER);
 		
 		// Create frame
-		JFrame frame = new JFrame("Anisotropic");
+		frame = new JFrame("Anisotropic");
 		frame.getContentPane().add(panel);
 		frame.setSize(768, 768);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -295,5 +296,18 @@ public class Anisotropic extends Demo {
 		Anisotropic p = new Anisotropic();
 		p.enableGUI();
 		Demo.runDemo(p, args);
+	}
+	
+	/**
+	 * Clean up GUI objects.
+	 */
+	@Override
+	public void cleanup() {
+		super.cleanup();
+		if(gui) {
+			frame.setVisible(false);
+			chart.dispose();
+			frame.dispose();
+		}
 	}
 }
