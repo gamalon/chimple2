@@ -108,7 +108,7 @@ xml += "</classpath>"
 
 newline()
 notice("Writing .classpath...")
-with open("classpath.txt", "w") as file:
+with open(".classpath", "w") as file:
     file.write(xml)
 newline()
 notice("Done!")
