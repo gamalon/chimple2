@@ -43,13 +43,44 @@ import org.jzy3d.plot3d.rendering.canvas.Quality;
  *
  */
 public class Anisotropic extends Demo {
+	/**
+	 * Correlation (thinness of the bivariate Gaussian)
+	 */
 	protected double epsilon;
+	
+	/**
+	 * GUI enabled?
+	 */
 	protected boolean gui = false;
+	
+	/**
+	 * GUI frame
+	 */
 	protected JFrame frame;
+	
+	/**
+	 * GUI chart
+	 */
 	protected Chart chart;
+	
+	/**
+	 * GUI "Pct blk" label
+	 */
 	protected JLabel pct;
+	
+	/**
+	 * GUI last point plotted
+	 */
 	protected Point lastpoint;
+	
+	/**
+	 * GUI number of black points
+	 */
 	protected int good;
+	
+	/**
+	 * GUI number of white points
+	 */
 	protected int bad;
 	
 	/**
