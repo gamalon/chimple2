@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="javadoc">
-    <target name="javadoc">
-        <javadoc access="public" author="true" classpath="../../processing-2.2.1/core/library/core.jar;../external-libs/jfreechart-1.0.17.jar;../external-libs/commons-math3-3.3.jar;F:\Programs\MATLAB\java\jar\jmi.jar;C:\Program Files\Eclipse\plugins\org.junit_4.11.0.v201303080030\junit.jar;../external-libs/jcommon-1.0.21.jar;C:\Program Files\Eclipse\plugins\org.hamcrest.core_1.3.0.v201303031735.jar;../external-libs/commons-lang3-3.3.2.jar" destdir="../javadoc" doctitle="chimple2" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="com.gamelanlabs.chimple2.demos,com.gamelanlabs.chimple2.core,com.gamelanlabs.chimple2.diagnostics,com.gamelanlabs.chimple2.solvers,com.gamelanlabs.chimple2.monkeys,com.gamelanlabs.chimple2.util,com.gamelanlabs.chimple2.tests,com.gamelanlabs.chimple2.visualization" source="1.7" sourcepath="../src" splitindex="true" use="true" version="true"/>
-    </target>
-</project>
