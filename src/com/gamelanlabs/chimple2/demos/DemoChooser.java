@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -104,7 +105,12 @@ public class DemoChooser extends JFrame {
 		programName.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				updateProgramPanel();
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						updateProgramPanel();
+					}
+				});
 			}  
 		});
 		pnlProgram.setLayout(new BoxLayout(pnlProgram, BoxLayout.Y_AXIS));
@@ -147,7 +153,12 @@ public class DemoChooser extends JFrame {
 		solverName.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				updateSolverPanel();
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						updateSolverPanel();
+					}
+				});
 			}  
 		});
 		
