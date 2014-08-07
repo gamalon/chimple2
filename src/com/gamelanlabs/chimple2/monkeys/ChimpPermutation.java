@@ -1,8 +1,7 @@
 package com.gamelanlabs.chimple2.monkeys;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.util.CombinatoricsUtils;
-
-import com.gamelanlabs.chimple2.core.Zookeeper;
 
 /**
  * Permutation ERP.
@@ -11,18 +10,7 @@ import com.gamelanlabs.chimple2.core.Zookeeper;
  *
  */
 public class ChimpPermutation extends Monkey<int[]> {
-	public int n;
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param	z	The zookeeper
-	 * @param	_n	Perutations of length n
-	 */
-	public ChimpPermutation(Zookeeper z, int _n) {
-		super(z);
-		n = _n;
-	}
+	protected int n;
 	
 	/**
 	 * Generates from the prior (basically directly
@@ -32,7 +20,7 @@ public class ChimpPermutation extends Monkey<int[]> {
 	 */
 	@Override
 	public int[] generate() {
-		setValue(getRandom().nextPermutation(n));
+		value = getRandom().nextPermutation(n);
 		return getValue();
 	}
 	
@@ -43,7 +31,6 @@ public class ChimpPermutation extends Monkey<int[]> {
 	 */
 	@Override
 	public int[] propose() {
-		int[] value = getValue();
 		int i = Math.abs(getRandom().nextInt())%(n);
 		int j = Math.abs(getRandom().nextInt())%(n-1);
 		if(j >= i) ++j;
@@ -53,7 +40,7 @@ public class ChimpPermutation extends Monkey<int[]> {
 		value[i] = value[j];
 		value[j] = tmp;
 		
-		return value;
+		return getValue();
 	}
 	
 	/**
@@ -79,14 +66,48 @@ public class ChimpPermutation extends Monkey<int[]> {
 	}
 	
 	/**
-	 * Clones the monkey
+	 * Override default getter, in order to return a
+	 * clone of the array, instead of a reference to the
+	 * original array.
 	 * 
-	 * @return	clone	Cloned monkey
+	 * @return	safevalue
 	 */
 	@Override
-	public ChimpPermutation clone() {
-		ChimpPermutation c = new ChimpPermutation(zookeeper, n);
-		c.setValue(getValue().clone());
-		return c;
+	public int[] getValue() {
+		return ArrayUtils.clone(value);
+	}
+	
+	/**
+	 * Returns a safe copy of the parameters of this monkey.
+	 * 
+	 * @return	params
+	 */
+	@Override
+	public Object[] getParams() {
+		return new Object[] {n};
+	}
+	
+	/**
+	 * Asks the monkey if the Banana recipe changed.
+	 * 
+	 * @param	newparams
+	 * @return	changed
+	 */
+	@Override
+	public boolean paramsChanged(Object... newparams) {
+		return n != (int) newparams[0];
+	}
+
+	/**
+	 * Tells the monkey how to make Bananas.
+	 * 
+	 * Makes a safe copy of the instructions (ie. not
+	 * by reference).
+	 * 
+	 * @param	params		Parameters
+	 */
+	@Override
+	public void setParams(Object... params) {
+		n = (int) params[0];
 	}
 }

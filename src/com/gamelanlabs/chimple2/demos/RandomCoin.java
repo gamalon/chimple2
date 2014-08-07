@@ -18,7 +18,7 @@ import com.gamelanlabs.chimple2.solvers.Solver;
  * 
  * The closed-form posterior is the distribution
  * BetaBin(16, 6, 20). (A function that calculates the BetaBin
- * PMF is included in RandomCoinGUI.)
+ * PMF is included in CompareSamplers.)
  *  
  * @author BenL
  *
@@ -47,10 +47,13 @@ public class RandomCoin extends Demo
 	/**
 	 * This is the probabilistic program.
 	 * 
-	 * @param	args	A one-element Object[] that contains the actual number of heads.
-	 * @return	r		A two-element int[] that contains the generated number of heads,
-	 * 					along with the actual number of heads. Both pieces of information
-	 * 					are needed by the cost function.
+	 * @param	args	A one-element Object[] that contains
+	 * 					the actual number of heads.
+	 * @return	r		A two-element int[] that contains the
+	 * 					generated number of heads, along with
+	 * 					the actual number of heads. Both
+	 * 					pieces of information are needed by
+	 * 					the cost function.
 	 */
 	@Override
 	public Object run(Object... args) 
@@ -69,8 +72,9 @@ public class RandomCoin extends Demo
 	}
 	
 	/**
-	 * This is the cost function. Although it is not the Bayesian one, it is a
-	 * proper cost function (in that it only looks at the result of the program,
+	 * This is the cost function. Although it is not the
+	 * Bayesian one, it is a proper cost function (in that
+	 * it only looks at the result of the program,
 	 * and doesn't peek inside the cage).
 	 */
 	public static class AbsDistanceCostFunction extends CostFunction
@@ -91,12 +95,17 @@ public class RandomCoin extends Demo
 	}
 	
 	/**
-	 * This is another cost function (which will produce the correct Beta-Binomial posterior).
-	 * It is equivalent to doing 20 extra flips and calling chimpConst on sum2 == 15
-	 * in the old chimple. Also equivalent to Church's "condition" statement.
+	 * This is another cost function (which will
+	 * produce the correct Beta-Binomial posterior).
+	 * It is equivalent to doing 20 extra flips and
+	 * calling chimpConst on sum2 == 15 in the old
+	 * Chimple. Also equivalent to Church's
+	 * "condition" statement.
 	 * 
-	 * Of course, the closed-form solution saves us the 20 flips and high rejection rate, but usually we
-	 * won't have a closed-form solution for our generative model so this is the only thing we can do.
+	 * Of course, the closed-form solution saves us
+	 * the 20 flips and high rejection rate, but usually we
+	 * won't have a closed-form solution for our generative
+	 * model so this is the only thing we can do.
 	 */
 	public static class RejectionCostFunction extends CostFunction
 	{
@@ -110,7 +119,8 @@ public class RandomCoin extends Demo
 				sum += (Math.random() <= weight)?1:0;
 			}
 
-			// Reject here, to form the posterior for weight. (We know it to be Beta(16, 6).)
+			// Reject here, to form the posterior for weight.
+			// (We know it to be Beta(16, 6).)
 			if(sum == sum_val) {
 				return 0;
 			} else {
@@ -121,13 +131,15 @@ public class RandomCoin extends Demo
 	}
 	
 	/**
-	 * This is will produce the correct Beta-Binomial posterior much faster than RejectionCostFunction.
+	 * This is will produce the correct Beta-Binomial posterior
+	 * much faster than RejectionCostFunction.
 	 */
 	public static class BetaBinCostFunction extends CostFunction
 	{
 		@Override
 		public double call(Object result, MonkeyCage cage) {
-			// This is the exponential dispersion family energy/negative-log-likelihood for the binomial distribution.
+			// This is the exponential dispersion family energy/
+			// negative-log-likelihood for the binomial distribution.
 			double weight = ((ChimpRand) cage.get("weight")).getValue();
 			return -(sum_val*Math.log(weight)+(num_flips-sum_val)*Math.log(1-weight));
 		}
@@ -162,7 +174,8 @@ public class RandomCoin extends Demo
 	 * @return	solver
 	 */
 	@Override
-	public Solver getDefaultSolver(Demo program, Object[] args, CostFunction cf) {
+	public Solver getDefaultSolver(Demo program,
+			Object[] args, CostFunction cf) {
 		return new MetropolisHastingsSolver(program, args, cf);
 	}
 	

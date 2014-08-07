@@ -35,22 +35,28 @@ public class BasicTests {
 		Zookeeper z = new Zookeeper();
 		
 		Monkey<?>[] monkeys = new Monkey[] {
-				new ChimpBeta(z, 2, 1),
-				new ChimpDirichlet(z, new double[] {0.2, 0.2, 0.2, 0.2, 0.2}),
-				new ChimpDiscrete(z, new double[] {1, 90, 9}),
-				new ChimpFlip(z, 0.1),
-				new ChimpNormal(z, 0, 1, 0.1),
-				new ChimpRand(z)
+				new ChimpBeta() {{setParams(2, 1);}},
+				new ChimpDirichlet() {{setParams(new double[] {0.2, 0.2, 0.2, 0.2, 0.2});}},
+				new ChimpDiscrete() {{setParams(new double[] {1, 90, 9});}},
+				new ChimpFlip() {{setParams(0.1);}},
+				new ChimpNormal() {{setParams(0, 1, 0.1);}},
+				new ChimpRand()
 		};
 		
 		for(Monkey<?> m : monkeys) {
+			m.setZookeeper(z);
 			Object value = m.generate();
 			double energy = m.energy();
 			Object value2 = m.propose();
 			double tenergy = getTransitionEnergy(m, value);
+			
+			assertTrue(m.getValue() != null);
 
 			assertFalse(Double.isNaN(energy));
 			assertFalse(Double.isNaN(tenergy));
+			
+			Monkey<?> m2 = m.clone();
+			assertTrue(m2.getValue() != null);
 		}
 	}
 	

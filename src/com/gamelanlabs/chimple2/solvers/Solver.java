@@ -61,7 +61,7 @@ public abstract class Solver implements Query {
 		energy += cage.internalenergy;
 		
 		// Gather energies from the monkeys
-		for(Monkey<?> m : cage.monkeys) {
+		for(Monkey<?> m : cage.getList()) {
 			energy += m.energy();
 		}
 		

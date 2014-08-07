@@ -3,8 +3,6 @@ package com.gamelanlabs.chimple2.monkeys;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.commons.math3.stat.StatUtils;
 
-import com.gamelanlabs.chimple2.core.Zookeeper;
-
 /**
  * Beta distribution ERP.
  * 
@@ -12,20 +10,8 @@ import com.gamelanlabs.chimple2.core.Zookeeper;
  *
  */
 public class ChimpPoisson extends Monkey<Integer> {
-	public double lambda;
-	public double jump;
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param	z		The zookeeper
-	 * @param	_lambda	Parameter
-	 */
-	public ChimpPoisson(Zookeeper z, double _lambda, double _jump) {
-		super(z);
-		lambda = _lambda;
-		jump = _jump;
-	}
+	protected double lambda;
+	protected double jump;
 	
 	/**
 	 * Generates from the prior (basically directly
@@ -35,7 +21,7 @@ public class ChimpPoisson extends Monkey<Integer> {
 	 */
 	@Override
 	public Integer generate() {
-		setValue(getRandom().nextPoisson(lambda));
+		value = getRandom().nextPoisson(lambda);
 		return getValue();
 	}
 	
@@ -48,7 +34,6 @@ public class ChimpPoisson extends Monkey<Integer> {
 	public Integer propose() {
 		// Use Bactrian kernel
 		int var = (int) Math.ceil(lambda*jump);
-		int value = getValue();
 		double[] probs = new double[value+var];
 		
 		// Set up triangle discrete distribution
@@ -69,7 +54,7 @@ public class ChimpPoisson extends Monkey<Integer> {
 				break;
 			}
 		}
-		setValue(newvalue);
+		value = newvalue;
 		return newvalue;
 	}
 	
@@ -80,7 +65,7 @@ public class ChimpPoisson extends Monkey<Integer> {
 	 */
 	@Override
 	public double energy() {
-		return -(new PoissonDistribution(lambda)).logProbability(getValue());
+		return -(new PoissonDistribution(lambda)).logProbability(value);
 	}
 	
 	/**
@@ -96,14 +81,38 @@ public class ChimpPoisson extends Monkey<Integer> {
 	}
 	
 	/**
-	 * Clones the monkey
+	 * Returns a safe copy of the parameters of this monkey.
 	 * 
-	 * @return	clone	Cloned monkey
+	 * @return	params
 	 */
 	@Override
-	public ChimpPoisson clone() {
-		ChimpPoisson c = new ChimpPoisson(zookeeper, lambda, jump);
-		c.setValue(getValue());
-		return c;
+	public Object[] getParams() {
+		return new Object[] {lambda, jump};
+	}
+	
+	/**
+	 * Asks the monkey if the Banana recipe changed.
+	 * 
+	 * @param	newparams
+	 * @return	changed
+	 */
+	@Override
+	public boolean paramsChanged(Object... newparams) {
+		return lambda != (double) newparams[0] ||
+				jump != (double) newparams[1];
+	}
+
+	/**
+	 * Tells the monkey how to make Bananas.
+	 * 
+	 * Makes a safe copy of the instructions (ie. not
+	 * by reference).
+	 * 
+	 * @param	params		Parameters
+	 */
+	@Override
+	public void setParams(Object... params) {
+		lambda = (double) params[0];
+		jump = (double) params[1];
 	}
 }

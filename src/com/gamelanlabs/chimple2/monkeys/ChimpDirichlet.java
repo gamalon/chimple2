@@ -1,8 +1,9 @@
 package com.gamelanlabs.chimple2.monkeys;
 
-import org.apache.commons.math3.special.Gamma;
+import java.util.Arrays;
 
-import com.gamelanlabs.chimple2.core.Zookeeper;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.math3.special.Gamma;
 
 /**
  * Dirichlet distribution ERP.
@@ -11,19 +12,7 @@ import com.gamelanlabs.chimple2.core.Zookeeper;
  *
  */
 public class ChimpDirichlet extends Monkey<double[]> {
-	public double[] alphas;
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param	z	The zookeeper
-	 * @param	a	An array of parameters
-	 */
-	public ChimpDirichlet(Zookeeper z, double[] a) {
-		super(z);
-		alphas = a;
-		generate();
-	}
+	protected double[] alphas;
 	
 	/**
 	 * Generates from the prior (basically directly
@@ -33,7 +22,7 @@ public class ChimpDirichlet extends Monkey<double[]> {
 	 */
 	@Override
 	public double[] generate() {
-		setValue(getRandom().nextDirichlet(alphas));
+		value = getRandom().nextDirichlet(alphas);
 		return getValue();
 	}
 	
@@ -44,8 +33,6 @@ public class ChimpDirichlet extends Monkey<double[]> {
 	 */
 	@Override
 	public double[] propose() {
-		double[] value = getValue();
-
 		// Uniformly pick two random indices
 		int ii = getRandom().nextInt(value.length);
 		int jj = getRandom().nextInt(value.length-1);
@@ -78,7 +65,6 @@ public class ChimpDirichlet extends Monkey<double[]> {
 	public double energy() {
 		double energy = 0;
 		double sum = 0;
-		double[] value = getValue();
 		for(int i = 0; i < alphas.length; i++) {
 			energy -= (alphas[i]-1)*Math.log(value[i]);
 			energy += Gamma.logGamma(alphas[i]);
@@ -101,14 +87,46 @@ public class ChimpDirichlet extends Monkey<double[]> {
 	}
 	
 	/**
-	 * Clones the monkey
+	 * Override default getter, in order to return a
+	 * clone of the array, instead of a reference to the
+	 * original array.
 	 * 
-	 * @return	clone	Cloned monkey
+	 * @return	safevalue
 	 */
 	@Override
-	public ChimpDirichlet clone() {
-		ChimpDirichlet c = new ChimpDirichlet(zookeeper, alphas);
-		c.setValue(getValue().clone());
-		return c;
+	public double[] getValue() {
+		return ArrayUtils.clone(value);
+	}
+	
+	/**
+	 * Returns a safe copy of the parameters of this monkey.
+	 * 
+	 * @return	params
+	 */
+	@Override
+	protected Object[] getParams() {
+		return ArrayUtils.toObject(alphas);
+	}
+
+	/**
+	 * Sets params
+	 * 
+	 * @param	params
+	 */
+	@Override
+	public void setParams(Object... params) {
+		alphas = ArrayUtils.toPrimitive((Double[]) params);
+	}
+	
+	/**
+	 * Asks the monkey if the Banana recipe changed.
+	 * 
+	 * @param	newparams
+	 * @return	changed
+	 */
+	@Override
+	public boolean paramsChanged(Object... newparams) {
+		return !Arrays.equals(alphas, ArrayUtils.toPrimitive(
+				(Double[]) newparams));
 	}
 }
