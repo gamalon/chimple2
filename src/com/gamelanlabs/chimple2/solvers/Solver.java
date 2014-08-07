@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import com.gamelanlabs.chimple2.core.ChimpleProgram;
 import com.gamelanlabs.chimple2.core.CostFunction;
 import com.gamelanlabs.chimple2.core.MonkeyCage;
+import com.gamelanlabs.chimple2.core.MonkeyFactory;
 import com.gamelanlabs.chimple2.core.Query;
 import com.gamelanlabs.chimple2.core.Zookeeper;
 import com.gamelanlabs.chimple2.monkeys.Monkey;
-import com.gamelanlabs.chimple2.util.MHUtils;
 
 /**
  * All solvers should extend this base class.
@@ -40,9 +40,17 @@ public abstract class Solver implements Query {
 		arguments = a;
 		costfunction = cf;
 		p.zookeeper = zookeeper;
-		p.factory = new MHUtils.WeakMonkeyFactory(zookeeper);
+		p.factory = makeMonkeyFactory();
 		results = new ArrayList<Object>();
 	}
+	
+	/**
+	 * Returns the MonkeyFactory that this solver wants to give the
+	 * ChimpleProgram.
+	 * 
+	 * @return	factory
+	 */
+	protected abstract MonkeyFactory makeMonkeyFactory();
 	
 	/**
 	 * Computes the energy of a state.

@@ -80,6 +80,117 @@ public abstract class MHUtils {
 				return m.getValue();
 			}
 		}
+	}
+	
+	
+	/**
+	 * Monkey factory that implements the "strong stochastic reuse"
+	 * memoization strategy.
+	 * 
+	 * @author BenL
+	 *
+	 */
+	public static class StrongMonkeyFactory implements MonkeyFactory {
+		/**
+		 * See above.
+		 */
+		protected final Zookeeper zookeeper;
 		
+		/**
+		 * Constructor
+		 * 
+		 * @param	z
+		 */
+		public StrongMonkeyFactory(Zookeeper z) {
+			zookeeper = z;
+		}
+		
+		/**
+		 * Uses the "strong stochastic reuse" memoization strategy.
+		 * 
+		 * @param	type
+		 * @param	name
+		 * @param	params
+		 * @return	banana
+		 */
+		@Override
+		public <Banana> Banana makeMonkey(
+				Class<? extends Monkey<Banana>> type,
+				String name, Object... params) {
+			Monkey<Banana> m = null;
+			
+			try {
+				m = type.cast(zookeeper.cage.get(name));
+			} catch(ClassCastException e) {
+				zookeeper.cage.del(zookeeper.cage.get(name));
+			}
+			
+			if(m == null) {
+				// This monkey needs to be regenerated from the prior,
+				// because it didn't exist before.
+				try {
+					m = type.newInstance();
+				} catch (InstantiationException | IllegalAccessException e) {
+					e.printStackTrace();
+					return null;
+				}
+				m.setZookeeper(zookeeper);
+				m.setParams(params);
+				m.touched = true;
+				zookeeper.cage.add(name, m);
+				return m.generate();
+			} else {
+				// Use the memoized value.
+				m.touched = true;
+				return m.getValue();
+			}
+		}
+	}
+	
+	
+	/**
+	 * Monkey factory that always generates from the prior & ignores the cage.
+	 * 
+	 * @author BenL
+	 *
+	 */
+	public static class NaiveMonkeyFactory implements MonkeyFactory {
+		/**
+		 * See above.
+		 */
+		protected final Zookeeper zookeeper;
+		
+		/**
+		 * Constructor
+		 * 
+		 * @param	z
+		 */
+		public NaiveMonkeyFactory(Zookeeper z) {
+			zookeeper = z;
+		}
+		
+		/**
+		 * Ignores the cage.
+		 * 
+		 * @param	type
+		 * @param	name
+		 * @param	params
+		 * @return	banana
+		 */
+		@Override
+		public <Banana> Banana makeMonkey(
+				Class<? extends Monkey<Banana>> type,
+				String name, Object... params) {
+			Monkey<Banana> m;
+			try {
+				m = type.newInstance();
+			} catch (InstantiationException | IllegalAccessException e) {
+				e.printStackTrace();
+				return null;
+			}
+			m.setZookeeper(zookeeper);
+			m.setParams(params);
+			return m.generate();
+		}
 	}
 }

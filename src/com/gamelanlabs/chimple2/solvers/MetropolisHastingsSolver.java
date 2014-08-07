@@ -6,7 +6,9 @@ import com.gamelanlabs.chimple2.core.ChimpleProgram;
 import com.gamelanlabs.chimple2.core.CostFunction;
 import com.gamelanlabs.chimple2.core.EndCondition;
 import com.gamelanlabs.chimple2.core.MonkeyCage;
+import com.gamelanlabs.chimple2.core.MonkeyFactory;
 import com.gamelanlabs.chimple2.monkeys.Monkey;
+import com.gamelanlabs.chimple2.util.MHUtils;
 
 /**
  * (Correct) traceMH solver. This class is very well documented, so see the comments
@@ -53,6 +55,17 @@ public class MetropolisHastingsSolver extends Solver {
 	 */
 	public MetropolisHastingsSolver(ChimpleProgram p, Object[] a, CostFunction cf) {
 		super(p, a, cf);
+	}
+	
+	/**
+	 * Returns the MonkeyFactory that this solver wants to give the
+	 * ChimpleProgram.
+	 * 
+	 * @return	factory
+	 */
+	@Override
+	protected MonkeyFactory makeMonkeyFactory() {
+		return new MHUtils.WeakMonkeyFactory(zookeeper);
 	}
 	
 	/**
