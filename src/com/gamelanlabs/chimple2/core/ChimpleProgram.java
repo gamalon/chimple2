@@ -23,6 +23,11 @@ public abstract class ChimpleProgram implements Cloneable {
 	public Zookeeper zookeeper;
 	
 	/**
+	 * Monkey production plant, no trespassing.
+	 */
+	public MonkeyFactory factory;
+	
+	/**
 	 * The solver may clone() and run multiple instances of your ChimpleProgram
 	 * in parallel, in which case it may write a solver-specific tag to each
 	 * program.
@@ -40,7 +45,7 @@ public abstract class ChimpleProgram implements Cloneable {
 	public abstract Object run(Object ... args);
 	
 	/**
-	 * Perform cleanup (ie. close any GUI windows this program created, etc).
+	 * Override this to perform cleanup (ie. close any GUI windows this program created, etc).
 	 */
 	public void cleanup() { }
 	
@@ -64,8 +69,9 @@ public abstract class ChimpleProgram implements Cloneable {
 		try {
 			ChimpleProgram p = (ChimpleProgram) super.clone();
 			
-			// Wipe the zookeeper
+			// Wipe the zookeeper & factory
 			p.zookeeper = null;
+			p.factory = null;
 			return p;
 		} catch (CloneNotSupportedException e) {
 			// No reason this should ever happen
@@ -180,7 +186,7 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @return	value
 	 */
 	public int chimpFlip(String name, double p) {
-		return zookeeper.makeMonkey(ChimpFlip.class, name, p);
+		return factory.makeMonkey(ChimpFlip.class, name, p);
 	}
 
 	/**
@@ -190,7 +196,7 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @return	value
 	 */
 	public double chimpRand(String name) {
-		return zookeeper.makeMonkey(ChimpRand.class, name);
+		return factory.makeMonkey(ChimpRand.class, name);
 	}
 	
 	/**
@@ -202,7 +208,7 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @return	value
 	 */
 	public double chimpBeta(String name, double alpha, double beta) {
-		return zookeeper.makeMonkey(ChimpBeta.class, name, alpha, beta);
+		return factory.makeMonkey(ChimpBeta.class, name, alpha, beta);
 	}
 
 	/**
@@ -213,7 +219,7 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @return	value
 	 */
 	public double[] chimpDirichlet(String name, double[] alphas) {
-		return zookeeper.makeMonkey(ChimpDirichlet.class, name, alphas);
+		return factory.makeMonkey(ChimpDirichlet.class, name, alphas);
 	}
 
 	/**
@@ -224,7 +230,7 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @return	value
 	 */
 	public int chimpDiscrete(String name, double[] probs) {
-		return zookeeper.makeMonkey(ChimpDiscrete.class, name, probs);
+		return factory.makeMonkey(ChimpDiscrete.class, name, probs);
 	}
 
 	/**
@@ -237,7 +243,7 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @return	value
 	 */
 	public double chimpNormal(String name, double mean, double variance, double walk_variance) {
-		return zookeeper.makeMonkey(ChimpNormal.class, name, mean, variance, walk_variance);
+		return factory.makeMonkey(ChimpNormal.class, name, mean, variance, walk_variance);
 	}
 
 	/**
@@ -250,7 +256,7 @@ public abstract class ChimpleProgram implements Cloneable {
 	 */
 	public double chimpNormal(String name, double mean, double variance) {
 		// Default proposal kernel (random walk) variance is variance/10.
-		return zookeeper.makeMonkey(ChimpNormal.class, name, mean, variance, variance/10);
+		return factory.makeMonkey(ChimpNormal.class, name, mean, variance, variance/10);
 	}
 
 	/**
@@ -262,7 +268,7 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @return	value
 	 */
 	public int chimpPoisson(String name, double lambda, double jump) {
-		return zookeeper.makeMonkey(ChimpPoisson.class, name, lambda, jump);
+		return factory.makeMonkey(ChimpPoisson.class, name, lambda, jump);
 	}
 
 	/**
@@ -273,6 +279,6 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @return	value
 	 */
 	public int[] chimpPermutation(String name, int n) {
-		return zookeeper.makeMonkey(ChimpPermutation.class, name, n);
+		return factory.makeMonkey(ChimpPermutation.class, name, n);
 	}
 }

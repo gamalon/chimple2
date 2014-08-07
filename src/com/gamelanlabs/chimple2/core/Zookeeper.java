@@ -58,45 +58,4 @@ public class Zookeeper {
 			}
 		}
 	}
-
-	/**
-	 * Some of this code is MH-specific and should probably be moved out.
-	 * 
-	 * @param	type
-	 * @param	name
-	 * @param	params
-	 * @return	banana
-	 */
-	public <Banana> Banana makeMonkey(Class<? extends Monkey<Banana>> type,
-			String name, Object... params) {
-		Monkey<Banana> m = null;
-		
-		try {
-			m = type.cast(cage.get(name));
-		} catch(ClassCastException e) {
-			cage.del(cage.get(name));
-		}
-		
-		if(m == null || m.paramsChanged(params)) {
-			// This monkey needs to be regenerated from the prior,
-			// either because it didn't exist before, or because
-			// an upstream monkey was proposed, causing the parameter
-			// of this monkey to be changed.
-			try {
-				m = type.newInstance();
-			} catch (InstantiationException | IllegalAccessException e) {
-				e.printStackTrace();
-				return null;
-			}
-			m.setZookeeper(this);
-			m.setParams(params);
-			m.touched = true;
-			cage.add(name, m);
-			return m.generate();
-		} else {
-			// Use the memoized value.
-			m.touched = true;
-			return m.getValue();
-		}
-	}
 }

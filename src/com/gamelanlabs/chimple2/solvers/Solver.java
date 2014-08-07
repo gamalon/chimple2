@@ -8,6 +8,7 @@ import com.gamelanlabs.chimple2.core.MonkeyCage;
 import com.gamelanlabs.chimple2.core.Query;
 import com.gamelanlabs.chimple2.core.Zookeeper;
 import com.gamelanlabs.chimple2.monkeys.Monkey;
+import com.gamelanlabs.chimple2.util.MHUtils;
 
 /**
  * All solvers should extend this base class.
@@ -39,6 +40,7 @@ public abstract class Solver implements Query {
 		arguments = a;
 		costfunction = cf;
 		p.zookeeper = zookeeper;
+		p.factory = new MHUtils.WeakMonkeyFactory(zookeeper);
 		results = new ArrayList<Object>();
 	}
 	
