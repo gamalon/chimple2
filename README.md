@@ -1,9 +1,6 @@
 chimple2
 ========
 
-**Demos Quick Start**:
-Clone the repository and find the releases/chimple-(version).jar file, or download the JAR from below. Then simply run the JAR file (on many operating systems, this can be done by double-clicking) and the demo chooser window will appear.
-
 **Java Developer Quick Start**:
 Clone the repository and write a class that extends ChimpleProgram. You will be required to implement the `run(Object... args)` function. Write your probabilistic program here (for your first program, try a simple coin model). For help, see the demos.
 
