@@ -2,8 +2,6 @@ package com.gamelanlabs.chimple2.monkeys;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 /**
  * Discrete distribution ERP. Returns values from 0 to
  * probs.length-1 (the MATLAB wrapper changes this range
@@ -121,8 +119,7 @@ public class ChimpDiscrete extends Monkey<Integer> {
 	 */
 	@Override
 	public boolean paramsChanged(Object... newparams) {
-		return !Arrays.equals(probs, ArrayUtils.toPrimitive(
-				(Double[]) newparams[0]));
+		return !Arrays.equals(probs, (double[]) newparams[0]);
 	}
 	
 	/**
@@ -135,6 +132,6 @@ public class ChimpDiscrete extends Monkey<Integer> {
 	 */
 	@Override
 	public void setParams(Object... params) {
-		probs = ArrayUtils.toPrimitive((Double[]) params[0]);
+		probs = (double[]) params[0];
 	}
 }
