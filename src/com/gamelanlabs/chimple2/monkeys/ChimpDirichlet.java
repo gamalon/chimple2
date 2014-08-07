@@ -105,7 +105,7 @@ public class ChimpDirichlet extends Monkey<double[]> {
 	 */
 	@Override
 	protected Object[] getParams() {
-		return ArrayUtils.toObject(alphas);
+		return new Object[] {alphas};
 	}
 
 	/**
