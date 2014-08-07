@@ -1,6 +1,5 @@
 package com.gamelanlabs.chimple2.monkeys;
 
-import com.gamelanlabs.chimple2.core.Zookeeper;
 
 /**
  * Bernoulli distribution ERP. Returns 0 (tails) or
@@ -10,19 +9,7 @@ import com.gamelanlabs.chimple2.core.Zookeeper;
  *
  */
 public class ChimpFlip extends Monkey<Integer> {
-	public double weight;
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param	z	The zookeeper
-	 * @param	w	The coin weight (0.0 to 1.0)
-	 */
-	public ChimpFlip(Zookeeper z, double w) {
-		super(z);
-		weight = w;
-		generate();
-	}
+	protected double weight;
 	
 	/**
 	 * Generates a proposal from the prior.
@@ -32,9 +19,9 @@ public class ChimpFlip extends Monkey<Integer> {
 	@Override
 	public Integer generate() {
 		if (getRandom().nextDouble() < weight) {
-			setValue(1);
+			value = 1;
 		} else {
-			setValue(0);
+			value = 0;
 		}
 		return getValue();
 	}
@@ -46,7 +33,7 @@ public class ChimpFlip extends Monkey<Integer> {
 	 */
 	@Override
 	public Integer propose() {
-		setValue(1-getValue());
+		value = 1 - value;
 		return getValue();
 	}
 
@@ -77,14 +64,36 @@ public class ChimpFlip extends Monkey<Integer> {
 	}
 	
 	/**
-	 * Clones the monkey
+	 * Returns a safe copy of the parameters of this monkey.
 	 * 
-	 * @return	clone	Cloned monkey
+	 * @return	params
 	 */
 	@Override
-	public ChimpFlip clone() {
-		ChimpFlip c = new ChimpFlip(zookeeper, weight);
-		c.setValue(getValue());
-		return c;
+	public Object[] getParams() {
+		return new Object[] {weight};
+	}
+	
+	/**
+	 * Asks the monkey if the Banana recipe changed.
+	 * 
+	 * @param	newparams
+	 * @return	changed
+	 */
+	@Override
+	public boolean paramsChanged(Object... newparams) {
+		return weight != (double) newparams[0];
+	}
+	
+	/**
+	 * Tells the monkey how to make Bananas.
+	 * 
+	 * Makes a safe copy of the instructions (ie. not
+	 * by reference).
+	 * 
+	 * @param	params		Parameters
+	 */
+	@Override
+	public void setParams(Object... params) {
+		weight = (double) params[0];
 	}
 }

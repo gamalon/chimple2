@@ -1,6 +1,5 @@
 package com.gamelanlabs.chimple2.core;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 
 import com.gamelanlabs.chimple2.monkeys.ChimpBeta;
@@ -24,6 +23,11 @@ public abstract class ChimpleProgram implements Cloneable {
 	public Zookeeper zookeeper;
 	
 	/**
+	 * Monkey production plant, no trespassing.
+	 */
+	public MonkeyFactory factory;
+	
+	/**
 	 * The solver may clone() and run multiple instances of your ChimpleProgram
 	 * in parallel, in which case it may write a solver-specific tag to each
 	 * program.
@@ -41,7 +45,7 @@ public abstract class ChimpleProgram implements Cloneable {
 	public abstract Object run(Object ... args);
 	
 	/**
-	 * Perform cleanup (ie. close any GUI windows this program created, etc).
+	 * Override this to perform cleanup (ie. close any GUI windows this program created, etc).
 	 */
 	public void cleanup() { }
 	
@@ -65,8 +69,9 @@ public abstract class ChimpleProgram implements Cloneable {
 		try {
 			ChimpleProgram p = (ChimpleProgram) super.clone();
 			
-			// Wipe the zookeeper
+			// Wipe the zookeeper & factory
 			p.zookeeper = null;
+			p.factory = null;
 			return p;
 		} catch (CloneNotSupportedException e) {
 			// No reason this should ever happen
@@ -181,32 +186,7 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @return	value
 	 */
 	public int chimpFlip(String name, double p) {
-		ChimpFlip m;
-		
-		try {
-			m = (ChimpFlip) zookeeper.cage.get(name);
-		} catch(ClassCastException e) {
-			m = null;
-			zookeeper.cage.del(zookeeper.cage.get(name));
-		}
-		
-		if(m == null) {
-			m = new ChimpFlip(zookeeper, p);
-			zookeeper.cage.add(name, m);
-			m.generate();
-		}
-		
-		m.touched = true;
-		
-		if(p != m.weight) {
-			// An upstream monkey was regenerated and
-			// the parameters for this monkey changed.
-			// We should generate from the prior here.
-			m.weight = p;
-			m.generate();
-		}
-		
-		return m.getValue();
+		return factory.makeMonkey(ChimpFlip.class, name, p);
 	}
 
 	/**
@@ -216,24 +196,7 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @return	value
 	 */
 	public double chimpRand(String name) {
-		ChimpRand m;
-		
-		try {
-			m = (ChimpRand) zookeeper.cage.get(name);
-		} catch(ClassCastException e) {
-			m = null;
-			zookeeper.cage.del(zookeeper.cage.get(name));
-		}
-		
-		if(m == null) {
-			m = new ChimpRand(zookeeper);
-			zookeeper.cage.add(name, m);
-			m.generate();
-		}
-		
-		m.touched = true;
-		
-		return m.getValue();
+		return factory.makeMonkey(ChimpRand.class, name);
 	}
 	
 	/**
@@ -245,32 +208,7 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @return	value
 	 */
 	public double chimpBeta(String name, double alpha, double beta) {
-		ChimpBeta m;
-		
-		try {
-			m = (ChimpBeta) zookeeper.cage.get(name);
-		} catch(ClassCastException e) {
-			m = null;
-			zookeeper.cage.del(zookeeper.cage.get(name));
-		}
-		
-		if(m == null) {
-			m = new ChimpBeta(zookeeper, alpha, beta);
-			zookeeper.cage.add(name, m);
-			m.generate();
-		}
-		
-		m.touched = true;
-		
-		if(alpha != m.alphas[0] || beta != m.alphas[1]) {
-			// An upstream monkey was regenerated and
-			// the parameters for this monkey changed.
-			// We should generate from the prior here.
-			m.alphas = new double[] {alpha, beta};
-			m.generate();
-		}
-		
-		return m.getValue();
+		return factory.makeMonkey(ChimpBeta.class, name, alpha, beta);
 	}
 
 	/**
@@ -281,32 +219,7 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @return	value
 	 */
 	public double[] chimpDirichlet(String name, double[] alphas) {
-		ChimpDirichlet m;
-		
-		try {
-			m = (ChimpDirichlet) zookeeper.cage.get(name);
-		} catch(ClassCastException e) {
-			m = null;
-			zookeeper.cage.del(zookeeper.cage.get(name));
-		}
-		
-		if(m == null) {
-			m = new ChimpDirichlet(zookeeper, alphas);
-			zookeeper.cage.add(name, m);
-			m.generate();
-		}
-		
-		m.touched = true;
-		
-		if(!Arrays.equals(alphas, m.alphas)) {
-			// An upstream monkey was regenerated and
-			// the parameters for this monkey changed.
-			// We should generate from the prior here.
-			m.alphas = alphas;
-			m.generate();
-		}
-		
-		return m.getValue().clone();
+		return factory.makeMonkey(ChimpDirichlet.class, name, alphas);
 	}
 
 	/**
@@ -317,84 +230,33 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @return	value
 	 */
 	public int chimpDiscrete(String name, double[] probs) {
-		ChimpDiscrete m;
-		
-		try {
-			m = (ChimpDiscrete) zookeeper.cage.get(name);
-		} catch(ClassCastException e) {
-			m = null;
-			zookeeper.cage.del(zookeeper.cage.get(name));
-		}
-		
-		if(m == null) {
-			m = new ChimpDiscrete(zookeeper, probs);
-			zookeeper.cage.add(name, m);
-			m.generate();
-		}
-		
-		m.touched = true;
-		
-		if(!Arrays.equals(probs, m.probs)) {
-			// An upstream monkey was regenerated and
-			// the parameters for this monkey changed.
-			// We should generate from the prior here.
-			m.probs = probs;
-			m.generate();
-		}
-		
-		return m.getValue();
+		return factory.makeMonkey(ChimpDiscrete.class, name, probs);
 	}
 
 	/**
 	 * N(mean, variance) ERP with N(value, walk_variance) proposal kernel.
 	 * 
 	 * @param	name
-	 * @param	mean
-	 * @param	variance
-	 * @param	walk_variance
+	 * @param	mean			The mean of the prior
+	 * @param	variance		The variance of the prior
+	 * @param	walk_variance	The variance of the proposal kernel
 	 * @return	value
 	 */
 	public double chimpNormal(String name, double mean, double variance, double walk_variance) {
-		ChimpNormal m;
-		try{
-			m = (ChimpNormal) zookeeper.cage.get(name);
-		} catch(ClassCastException e) {
-			m = null;
-			zookeeper.cage.del(zookeeper.cage.get(name));
-		}
-		
-		if(m == null) {
-			m = new ChimpNormal(zookeeper, mean, variance, walk_variance);
-			zookeeper.cage.add(name, m);
-			m.generate();
-		}
-		
-		m.touched = true;
-		
-		if(mean != m.mu || variance != m.sigma || walk_variance != m.walk_sigma) {
-			// An upstream monkey was regenerated and
-			// the parameters for this monkey changed.
-			// We should generate from the prior here.
-			m.mu = mean;
-			m.sigma = variance;
-			m.walk_sigma = walk_variance;
-			m.generate();
-		}
-		
-		return m.getValue();
+		return factory.makeMonkey(ChimpNormal.class, name, mean, variance, walk_variance);
 	}
 
 	/**
 	 * N(mean, variance) ERP with N(value, variance/10) proposal kernel.
 	 * 
 	 * @param	name
-	 * @param	mean
-	 * @param	variance
+	 * @param	mean			The mean of the prior
+	 * @param	variance		The variance of the prior
 	 * @return	value
 	 */
 	public double chimpNormal(String name, double mean, double variance) {
 		// Default proposal kernel (random walk) variance is variance/10.
-		return chimpNormal(name, mean, variance, variance/10);
+		return factory.makeMonkey(ChimpNormal.class, name, mean, variance, variance/10);
 	}
 
 	/**
@@ -406,33 +268,7 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @return	value
 	 */
 	public int chimpPoisson(String name, double lambda, double jump) {
-		ChimpPoisson m;
-		
-		try {
-			m = (ChimpPoisson) zookeeper.cage.get(name);
-		} catch(ClassCastException e) {
-			m = null;
-			zookeeper.cage.del(zookeeper.cage.get(name));
-		}
-		
-		if(m == null) {
-			m = new ChimpPoisson(zookeeper, lambda, jump);
-			zookeeper.cage.add(name, m);
-			m.generate();
-		}
-		
-		m.touched = true;
-		
-		if(lambda != m.lambda || jump != m.jump) {
-			// An upstream monkey was regenerated and
-			// the parameters for this monkey changed.
-			// We should generate from the prior here.
-			m.lambda = lambda;
-			m.jump = jump;
-			m.generate();
-		}
-		
-		return m.getValue();
+		return factory.makeMonkey(ChimpPoisson.class, name, lambda, jump);
 	}
 
 	/**
@@ -443,31 +279,6 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @return	value
 	 */
 	public int[] chimpPermutation(String name, int n) {
-		ChimpPermutation m;
-		
-		try {
-			m = (ChimpPermutation) zookeeper.cage.get(name);
-		} catch(ClassCastException e) {
-			m = null;
-			zookeeper.cage.del(zookeeper.cage.get(name));
-		}
-		
-		if(m == null) {
-			m = new ChimpPermutation(zookeeper, n);
-			zookeeper.cage.add(name, m);
-			m.generate();
-		}
-		
-		m.touched = true;
-		
-		if(n != m.n) {
-			// An upstream monkey was regenerated and
-			// the parameters for this monkey changed.
-			// We should generate from the prior here.
-			m.n = n;
-			m.generate();
-		}
-		
-		return m.getValue().clone();
+		return factory.makeMonkey(ChimpPermutation.class, name, n);
 	}
 }

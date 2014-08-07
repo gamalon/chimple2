@@ -29,14 +29,45 @@ import org.jfree.data.xy.XYSeriesCollection;
  *
  */
 public class Histogram extends JFrame {
+	private static final long serialVersionUID = 1880276366917111721L;
+
+	/**
+	 * Scatter plot
+	 */
 	public static final int SCATTER = 0x0000;
+	
+	/**
+	 * Line plot
+	 */
 	public static final int LINE = 0x0001;
+	
+	/**
+	 * Bar chart
+	 */
 	public static final int BAR = 0x0002;
 	
+	/////////////////////////////////////////////////
+	
+	/**
+	 * Use powers of 10 on the Y-axis.
+	 */
 	public static final int LOGAXIS = 0x0100;
 	
-	static final long serialVersionUID = 1L;
+	/////////////////////////////////////////////////
+	
+	/**
+	 * Mode
+	 */
+	protected static int mode;
+	
+	/**
+	 * The internal dataset object.
+	 */
 	protected Dataset data;
+	
+	/**
+	 * The internal JFreeChart object.
+	 */
 	protected JFreeChart chart;
 	
 	/**
@@ -50,9 +81,10 @@ public class Histogram extends JFrame {
 	 */
 	public Histogram(String windowtitle, String charttitle, String xlabel, String ylabel, int type) {
 		super(windowtitle);
+		mode = type & 0x00FF;
 		
 		// Make chart
-		switch(type & 0x00FF) {
+		switch(mode) {
 		case SCATTER:
 			data = new XYSeriesCollection();
 			chart = ChartFactory.createScatterPlot(charttitle, xlabel, ylabel,

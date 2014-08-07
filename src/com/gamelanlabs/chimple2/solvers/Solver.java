@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.gamelanlabs.chimple2.core.ChimpleProgram;
 import com.gamelanlabs.chimple2.core.CostFunction;
 import com.gamelanlabs.chimple2.core.MonkeyCage;
+import com.gamelanlabs.chimple2.core.MonkeyFactory;
 import com.gamelanlabs.chimple2.core.Query;
 import com.gamelanlabs.chimple2.core.Zookeeper;
 import com.gamelanlabs.chimple2.monkeys.Monkey;
@@ -39,8 +40,17 @@ public abstract class Solver implements Query {
 		arguments = a;
 		costfunction = cf;
 		p.zookeeper = zookeeper;
+		p.factory = makeMonkeyFactory();
 		results = new ArrayList<Object>();
 	}
+	
+	/**
+	 * Returns the MonkeyFactory that this solver wants to give the
+	 * ChimpleProgram.
+	 * 
+	 * @return	factory
+	 */
+	protected abstract MonkeyFactory makeMonkeyFactory();
 	
 	/**
 	 * Computes the energy of a state.
@@ -61,7 +71,7 @@ public abstract class Solver implements Query {
 		energy += cage.internalenergy;
 		
 		// Gather energies from the monkeys
-		for(Monkey<?> m : cage.monkeys) {
+		for(Monkey<?> m : cage.getList()) {
 			energy += m.energy();
 		}
 		

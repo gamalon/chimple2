@@ -1,6 +1,5 @@
 package com.gamelanlabs.chimple2.monkeys;
 
-import com.gamelanlabs.chimple2.core.Zookeeper;
 
 /**
  * Normal (Gaussian) distribution ERP, with Normal proposal
@@ -10,25 +9,9 @@ import com.gamelanlabs.chimple2.core.Zookeeper;
  *
  */
 public class ChimpNormal extends Monkey<Double> {
-	public double mu;
-	public double sigma;
-	public double walk_sigma;
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param	z				The zookeeper
-	 * @param	mean			The mean of the prior
-	 * @param	variance		The variance of the prior
-	 * @param	walk_variance	The variance of the proposal kernel
-	 */
-	public ChimpNormal(Zookeeper z, double mean, double variance, double walk_variance) {
-		super(z);
-		mu = mean;
-		sigma = variance;
-		walk_sigma = walk_variance;
-		generate();
-	}
+	protected double mu;
+	protected double sigma;
+	protected double walk_sigma;
 
 	/**
 	 * Generates a proposal from the prior.
@@ -37,7 +20,7 @@ public class ChimpNormal extends Monkey<Double> {
 	 */
 	@Override
 	public Double generate() {
-		setValue(getRandom().nextGaussian()*sigma + mu);
+		value = getRandom().nextGaussian()*sigma + mu;
 		return getValue();
 	}
 	
@@ -48,7 +31,7 @@ public class ChimpNormal extends Monkey<Double> {
 	 */
 	@Override
 	public Double propose() {
-		setValue(getRandom().nextGaussian()*walk_sigma + getValue());
+		value = getRandom().nextGaussian()*walk_sigma + getValue();
 		return getValue();
 	}
 
@@ -75,14 +58,41 @@ public class ChimpNormal extends Monkey<Double> {
 	}
 	
 	/**
-	 * Clones the monkey
+	 * Returns a safe copy of the parameters of this monkey.
 	 * 
-	 * @return	clone	Cloned monkey
+	 * @return	params
 	 */
 	@Override
-	public ChimpNormal clone() {
-		ChimpNormal c = new ChimpNormal(zookeeper, mu, sigma, walk_sigma);
-		c.setValue(getValue());
-		return c;
+	public Object[] getParams() {
+		return new Object[] {mu, sigma, walk_sigma};
+	}
+	
+	/**
+	 * Asks the monkey if the Banana recipe changed.
+	 * 
+	 * @param	newparams
+	 * @return	changed
+	 */
+	@Override
+	public boolean paramsChanged(Object... newparams) {
+		double _mu = (double) newparams[0];
+		double _sigma = (double) newparams[1];
+		double _walk_sigma = (double) newparams[2];
+		return mu != _mu || sigma != _sigma || walk_sigma != _walk_sigma;
+	}
+
+	/**
+	 * Tells the monkey how to make Bananas.
+	 * 
+	 * Makes a safe copy of the instructions (ie. not
+	 * by reference).
+	 * 
+	 * @param	params		Parameters
+	 */
+	@Override
+	public void setParams(Object... params) {
+		mu = (double) params[0];
+		sigma = (double) params[1];
+		walk_sigma = (double) params[2];
 	}
 }

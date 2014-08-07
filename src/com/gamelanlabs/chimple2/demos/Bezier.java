@@ -54,7 +54,7 @@ public class Bezier extends Demo {
 	}
 	
 	public Bezier() {
-		_gibberish = new ScribbleDraw("resources/benvigoda.jpg");
+		_gibberish = new ScribbleDraw("src/resources/benvigoda.jpg");
 
 	}
 	
@@ -223,15 +223,12 @@ public class Bezier extends Demo {
 			try {
 				tempImage = ImageIO.read(new File(filename));
 			} catch (IOException e) {
+				JOptionPane.showMessageDialog(null, "Using default image file.");
 				try {
-					tempImage = ImageIO.read(new File("benvigoda.jpg"));
+					tempImage = ImageIO.read(getClass().getResourceAsStream("/resources/benvigoda.jpg"));
 				} catch(IOException e2) {
-					try {
-						tempImage = ImageIO.read(new File("../resources/benvigoda.jpg"));
-					} catch(IOException e3) {
-						JOptionPane.showMessageDialog(null, "Couldn't find benvigoda.jpg! Please copy it into the current directory (it should be in resources/).");
-						return;
-					}
+					JOptionPane.showMessageDialog(null, "Error loading default image file.");
+					return;
 				}
 			}		
 			targetImg = toCompatibleImage(tempImage);

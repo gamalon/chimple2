@@ -1,8 +1,7 @@
 package com.gamelanlabs.chimple2.monkeys;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.special.Beta;
-
-import com.gamelanlabs.chimple2.core.Zookeeper;
 
 /**
  * Beta distribution ERP.
@@ -11,19 +10,7 @@ import com.gamelanlabs.chimple2.core.Zookeeper;
  *
  */
 public class ChimpBeta extends Monkey<Double> {
-	public double[] alphas;
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param	z		The zookeeper
-	 * @param	alpha	First alpha
-	 * @param	beta	Second alpha
-	 */
-	public ChimpBeta(Zookeeper z, double alpha, double beta) {
-		super(z);
-		alphas = new double[] {alpha, beta};
-	}
+	protected double[] alphas;
 	
 	/**
 	 * Generates from the prior (basically directly
@@ -33,7 +20,7 @@ public class ChimpBeta extends Monkey<Double> {
 	 */
 	@Override
 	public Double generate() {
-		setValue(getRandom().nextDirichlet(alphas)[0]);
+		value = getRandom().nextDirichlet(alphas)[0];
 		return getValue();
 	}
 	
@@ -44,7 +31,7 @@ public class ChimpBeta extends Monkey<Double> {
 	 */
 	@Override
 	public Double propose() {
-		setValue(1-getValue());
+		value = 1 - getValue();
 		return getValue();
 	}
 	
@@ -76,14 +63,34 @@ public class ChimpBeta extends Monkey<Double> {
 	}
 	
 	/**
-	 * Clones the monkey
+	 * Sets parameters
 	 * 
-	 * @return	clone	Cloned monkey
+	 * @param	params	The pair of parameters
 	 */
 	@Override
-	public ChimpBeta clone() {
-		ChimpBeta c = new ChimpBeta(zookeeper, alphas[0], alphas[1]);
-		c.setValue(getValue());
-		return c;
+	public void setParams(Object... params) {
+		alphas = ArrayUtils.toPrimitive((Double[]) params);
+	}
+	
+	/**
+	 * Returns an unsafe safe copy of the parameters of this monkey.
+	 * 
+	 * @return	params
+	 */
+	@Override
+	protected Object[] getParams() {
+		return ArrayUtils.toObject(alphas);
+	}
+	
+	/**
+	 * Compares parameters
+	 * 
+	 * @param	newparams
+	 * @return	changed
+	 */
+	@Override
+	public boolean paramsChanged(Object... newparams) {
+		return alphas[0] != (double) newparams[0] ||
+				alphas[1] != (double) newparams[1];
 	}
 }

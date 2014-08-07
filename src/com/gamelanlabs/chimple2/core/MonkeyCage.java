@@ -2,6 +2,7 @@ package com.gamelanlabs.chimple2.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -15,9 +16,15 @@ import com.gamelanlabs.chimple2.monkeys.Monkey;
  * @author BenL
  *
  */
-public class MonkeyCage {
-	/* Please do not abuse the monkeys. */
-	public ArrayList<Monkey<?>> monkeys;
+public final class MonkeyCage {
+	/**
+	 * Please do not abuse the monkeys.
+	 */
+	private final ArrayList<Monkey<?>> monkeys;
+	
+	/**
+	 * Treat them as you would your own children.
+	 */
 	private final HashMap<String, Monkey<?>> monkeynames;
 	
 	/**
@@ -35,6 +42,9 @@ public class MonkeyCage {
 	 */
 	public Object tag;
 	
+	/**
+	 * Constructor
+	 */
 	public MonkeyCage() {
 		monkeys = new ArrayList<Monkey<?>>();
 		monkeynames = new HashMap<String, Monkey<?>>();
@@ -66,8 +76,8 @@ public class MonkeyCage {
 	/**
 	 * Is Bob here?
 	 * 
-	 * @param 	n	Name of monkey
-	 * @return		Whether or not monkey with given name exists
+	 * @param 	n			Name of monkey
+	 * @return	maaaaaybe	Whether or not monkey with given name exists
 	 */
 	public boolean has(String n) {
 		return monkeynames.containsKey(n);
@@ -76,8 +86,8 @@ public class MonkeyCage {
 	/**
 	 * Get me Bob.
 	 * 
-	 * @param 	n	Name of monkey
-	 * @return		Monkey with given name
+	 * @param 	n		Name of monkey
+	 * @return	bob		Monkey with given name
 	 */
 	public Monkey<?> get(String n) {
 		return monkeynames.get(n);
@@ -86,8 +96,8 @@ public class MonkeyCage {
 	/**
 	 * Get me Bob (the unfriendly version).
 	 * 
-	 * @param 	n	Index of monkey
-	 * @return		Monkey with given name
+	 * @param 	n		Index of monkey
+	 * @return	bob		Monkey with given name
 	 */
 	public Monkey<?> get(int n) {
 		return monkeys.get(n);
@@ -109,6 +119,15 @@ public class MonkeyCage {
 	 */
 	public Set<String> getNames() {
 		return monkeynames.keySet();
+	}
+	
+	/**
+	 * Gets the list of Monkey objects.
+	 * 
+	 * @return	monkeys
+	 */
+	public List<Monkey<?>> getList() {
+		return monkeys;
 	}
 	
 	/**

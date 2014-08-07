@@ -1,6 +1,5 @@
 package com.gamelanlabs.chimple2.monkeys;
 
-import com.gamelanlabs.chimple2.core.Zookeeper;
 
 /**
  * Uniform distribution ERP. Returns values from 0.0 to 1.0.
@@ -9,17 +8,7 @@ import com.gamelanlabs.chimple2.core.Zookeeper;
  * @author BenL
  *
  */
-public class ChimpRand extends Monkey<Double> {
-	/**
-	 * Constructor
-	 * 
-	 * @param	z				The zookeeper
-	 */
-	public ChimpRand(Zookeeper z) {
-		super(z);
-		generate();
-	}
-	
+public class ChimpRand extends Monkey<Double> {	
 	/**
 	 * Generates a proposal from the prior.
 	 * 
@@ -27,7 +16,7 @@ public class ChimpRand extends Monkey<Double> {
 	 */
 	@Override
 	public Double generate() {
-		setValue(getRandom().nextDouble());
+		value = getRandom().nextDouble();
 		return getValue();
 	}
 	
@@ -65,14 +54,34 @@ public class ChimpRand extends Monkey<Double> {
 	}
 	
 	/**
-	 * Clones the monkey
+	 * Returns a safe copy of the parameters of this monkey.
 	 * 
-	 * @return	clone	Cloned monkey
+	 * @return	params
 	 */
 	@Override
-	public ChimpRand clone() {
-		ChimpRand c = new ChimpRand(zookeeper);
-		c.setValue(getValue());
-		return c;
+	public Object[] getParams() {
+		return new Object[] {};
 	}
+	
+	/**
+	 * Asks the monkey if the Banana recipe changed.
+	 * 
+	 * @param	newparams
+	 * @return	changed
+	 */
+	@Override
+	public boolean paramsChanged(Object... newparams) {
+		return false;
+	}
+
+	/**
+	 * Tells the monkey how to make Bananas.
+	 * 
+	 * Makes a safe copy of the instructions (ie. not
+	 * by reference).
+	 * 
+	 * @param	params		Parameters
+	 */
+	@Override
+	public void setParams(Object... params) { }
 }

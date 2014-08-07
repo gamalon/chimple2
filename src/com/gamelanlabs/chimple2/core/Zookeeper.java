@@ -42,7 +42,7 @@ public class Zookeeper {
 	 * program (see killUntouched).
 	 */
 	public void resetTrackers() {
-		for(Monkey<?> m : cage.monkeys) {
+		for(Monkey<?> m : cage.getList()) {
 			m.touched = false;
 		}
 	}
@@ -51,7 +51,7 @@ public class Zookeeper {
 	 * Kills all monkeys that don't have the "touched" property set.
 	 */
 	public void killUntouched() {
-		Iterator<Monkey<?>> i = cage.monkeys.iterator();
+		Iterator<Monkey<?>> i = cage.getList().iterator();
 		while(i.hasNext()) {
 			if(!i.next().touched) {
 				i.remove();

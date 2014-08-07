@@ -1,6 +1,6 @@
 package com.gamelanlabs.chimple2.monkeys;
 
-import com.gamelanlabs.chimple2.core.Zookeeper;
+import java.util.Arrays;
 
 /**
  * Discrete distribution ERP. Returns values from 0 to
@@ -11,20 +11,7 @@ import com.gamelanlabs.chimple2.core.Zookeeper;
  *
  */
 public class ChimpDiscrete extends Monkey<Integer> {
-	public double[] probs;
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param	z	The zookeeper
-	 * @param	p	An array of weights (does not have to be
-	 * 				normalized)
-	 */
-	public ChimpDiscrete(Zookeeper z, double[] p) {
-		super(z);
-		probs = p;
-		generate();
-	}
+	protected double[] probs;
 	
 	/**
 	 * Helper function that sums probs[].
@@ -47,7 +34,7 @@ public class ChimpDiscrete extends Monkey<Integer> {
 	@Override
 	public Integer generate() {
 		double rand = getRandom().nextDouble()*sum();
-		int value = probs.length - 1;
+		value = probs.length - 1;
 		for(int i = 0; i < probs.length; i++) {
 			rand -= probs[i];
 			if (rand < 0) {
@@ -55,7 +42,6 @@ public class ChimpDiscrete extends Monkey<Integer> {
 				break;
 			}
 		}
-		setValue(value);
 		return value;
 	}
 	
@@ -68,7 +54,6 @@ public class ChimpDiscrete extends Monkey<Integer> {
 	 */
 	@Override
 	public Integer propose() {
-		int value = getValue();
 		double sum = sum() - probs[value];
 		double rand = getRandom().nextDouble()*sum;
 		
@@ -91,7 +76,6 @@ public class ChimpDiscrete extends Monkey<Integer> {
 				break;
 			}
 		}
-		setValue(value);
 		return value;
 	}
 
@@ -102,7 +86,7 @@ public class ChimpDiscrete extends Monkey<Integer> {
 	 */
 	@Override
 	public double energy() {
-		return -Math.log(probs[getValue()]/sum());
+		return -Math.log(probs[value]/sum());
 	}
 	
 	/**
@@ -114,18 +98,40 @@ public class ChimpDiscrete extends Monkey<Integer> {
 	@Override
 	public double transitionEnergy(Integer fromvalue) {
 		double total = sum() - probs[fromvalue];
-		return -Math.log(probs[getValue()]/total);
+		return -Math.log(probs[value]/total);
 	}
 	
 	/**
-	 * Clones the monkey
+	 * Returns a safe copy of the parameters of this monkey.
 	 * 
-	 * @return	clone	Cloned monkey
+	 * @return	params
 	 */
 	@Override
-	public ChimpDiscrete clone() {
-		ChimpDiscrete c = new ChimpDiscrete(zookeeper, probs);
-		c.setValue(getValue());
-		return c;
+	protected Object[] getParams() {
+		return new Object[] {probs};
+	}
+	
+	/**
+	 * Asks the monkey if the Banana recipe changed.
+	 * 
+	 * @param	newparams
+	 * @return	changed
+	 */
+	@Override
+	public boolean paramsChanged(Object... newparams) {
+		return !Arrays.equals(probs, (double[]) newparams[0]);
+	}
+	
+	/**
+	 * Tells the monkey how to make Bananas.
+	 * 
+	 * Makes a safe copy of the instructions (ie. not
+	 * by reference).
+	 * 
+	 * @param	params		Parameters
+	 */
+	@Override
+	public void setParams(Object... params) {
+		probs = (double[]) params[0];
 	}
 }
