@@ -1,7 +1,5 @@
 package com.gamelanlabs.chimple2.monkeys;
 
-import java.util.Arrays;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.special.Gamma;
 
@@ -115,7 +113,10 @@ public class ChimpDirichlet extends Monkey<double[]> {
 	 */
 	@Override
 	public void setParams(Object... params) {
-		alphas = ArrayUtils.toPrimitive((Double[]) params);
+		alphas = new double[params.length];
+		for(int i = 0; i < params.length; i++) {
+			alphas[i] = (double) params[i];
+		}
 	}
 	
 	/**
@@ -126,7 +127,11 @@ public class ChimpDirichlet extends Monkey<double[]> {
 	 */
 	@Override
 	public boolean paramsChanged(Object... newparams) {
-		return !Arrays.equals(alphas, ArrayUtils.toPrimitive(
-				(Double[]) newparams));
+		for(int i = 0; i < newparams.length; i++) {
+			if(alphas[i] != (double) newparams[i]) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
