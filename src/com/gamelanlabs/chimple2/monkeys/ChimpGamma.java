@@ -10,8 +10,7 @@ import org.apache.commons.math3.special.Gamma;
 public class ChimpGamma extends Monkey<Double> {
     protected double alpha;
     protected double beta;
-    // TODO: move this into ChimpleProgram
-    protected double walk_sigma = 0.1;
+    protected double walk_sigma;
 
     @Override
     public Double generate() {
