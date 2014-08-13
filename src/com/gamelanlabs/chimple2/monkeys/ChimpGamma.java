@@ -15,7 +15,6 @@ public class ChimpGamma extends Monkey<Double> {
 
     @Override
     public Double generate() {
-        // TODO: confirm this is the correct parameterization
         value = getRandom().nextGamma(alpha, beta);
         return getValue();
     }
@@ -49,8 +48,6 @@ public class ChimpGamma extends Monkey<Double> {
 
     @Override
     public double transitionEnergy(Double fromvalue) {
-        // Proposal kernel is deterministic, so likelihood is
-        // always 1.
         return 0;
     }
 
@@ -61,7 +58,6 @@ public class ChimpGamma extends Monkey<Double> {
      */
     @Override
     public void setParams(Object... pars) {
-        //params = ArrayUtils.toPrimitive((double[]) pars);
         alpha = (Double)pars[0];
         beta = (Double)pars[1];
     }

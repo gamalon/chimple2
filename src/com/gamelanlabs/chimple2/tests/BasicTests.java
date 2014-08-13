@@ -57,7 +57,8 @@ public class BasicTests {
 
 			assertFalse(Double.isNaN(energy));
 			assertFalse(Double.isNaN(tenergy));
-			
+
+//          TODO: investigate this
 //			Monkey<?> m2 = m.clone();
 //			assertTrue(m2.getValue() != null);
 		}
