@@ -255,7 +255,7 @@ public abstract class ChimpleProgram implements Cloneable {
      * @return	value
      */
     public double chimpGamma(String name, double alpha, double beta) {
-        return factory.makeMonkey(ChimpGamma.class, name, alpha, beta, 0.1*alpha/(beta*beta));
+        return chimpGamma(name, alpha, beta, 0.1*alpha/(beta*beta));
     }
 
 	/**

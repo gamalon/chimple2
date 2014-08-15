@@ -20,7 +20,7 @@ public class ChimpGamma extends Monkey<Double> {
 
     @Override
     public Double propose() {
-        value = getRandom().nextGaussian()*walk_sigma + getValue();
+        value = Math.abs(getRandom().nextGaussian()*walk_sigma + getValue());
         return getValue();
     }
 
