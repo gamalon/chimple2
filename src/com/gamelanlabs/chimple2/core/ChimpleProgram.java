@@ -2,15 +2,16 @@ package com.gamelanlabs.chimple2.core;
 
 import java.util.LinkedList;
 
-import com.gamelanlabs.chimple2.monkeys.ChimpBeta;
-import com.gamelanlabs.chimple2.monkeys.ChimpDirichlet;
-import com.gamelanlabs.chimple2.monkeys.ChimpDiscrete;
-import com.gamelanlabs.chimple2.monkeys.ChimpFlip;
-import com.gamelanlabs.chimple2.monkeys.ChimpNormal;
-import com.gamelanlabs.chimple2.monkeys.ChimpPermutation;
-import com.gamelanlabs.chimple2.monkeys.ChimpPoisson;
-import com.gamelanlabs.chimple2.monkeys.ChimpRand;
+import com.gamelanlabs.chimple2.monkeys.*;
 import com.gamelanlabs.chimple2.solvers.MetropolisHastingsSolver;
+
+/**
+ * This the class that the user will extend when writing a probabilistic program.
+ *
+ * @author BenL
+ * @author dicai
+ *
+ */
 
 public abstract class ChimpleProgram implements Cloneable {
 	/**
@@ -203,12 +204,11 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * Beta(alpha, beta) ERP.
 	 * 
 	 * @param	name
-	 * @param	alpha
-	 * @param	beta
+	 * @param	alphas
 	 * @return	value
 	 */
-	public double chimpBeta(String name, double alpha, double beta) {
-		return factory.makeMonkey(ChimpBeta.class, name, alpha, beta);
+	public double chimpBeta(String name, Double[] alphas) {
+		return factory.makeMonkey(ChimpBeta.class, name, alphas);
 	}
 
 	/**
@@ -233,6 +233,31 @@ public abstract class ChimpleProgram implements Cloneable {
 		return factory.makeMonkey(ChimpDiscrete.class, name, probs);
 	}
 
+    /**
+     * Gamma(alpha, beta) ERP.
+     *
+     * @param	name
+     * @param	alpha
+     * @param	beta
+     * @param   walk_sigma
+     * @return	value
+     */
+    public double chimpGamma(String name, double alpha, double beta, double walk_sigma) {
+        return factory.makeMonkey(ChimpGamma.class, name, alpha, beta, walk_sigma);
+    }
+
+    /**
+     * Gamma(alpha, beta) ERP.
+     *
+     * @param	name
+     * @param	alpha
+     * @param	beta
+     * @return	value
+     */
+    public double chimpGamma(String name, double alpha, double beta) {
+        return chimpGamma(name, alpha, beta, 0.1*alpha/(beta*beta));
+    }
+
 	/**
 	 * N(mean, variance) ERP with N(value, walk_variance) proposal kernel.
 	 * 
@@ -256,7 +281,7 @@ public abstract class ChimpleProgram implements Cloneable {
 	 */
 	public double chimpNormal(String name, double mean, double variance) {
 		// Default proposal kernel (random walk) variance is variance/10.
-		return factory.makeMonkey(ChimpNormal.class, name, mean, variance, variance/10);
+		return factory.makeMonkey(ChimpNormal.class, name, mean, variance, variance / 10);
 	}
 
 	/**

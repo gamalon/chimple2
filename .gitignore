@@ -2,3 +2,5 @@
 .DS_Store
 .classpath
 .pydevproject
+*.iml
+*.idea*
