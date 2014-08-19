@@ -5,3 +5,8 @@
 *.iml
 *.idea*
 *.class
+*.aux
+*.log
+*.pdf
+*.toc
+*.out
