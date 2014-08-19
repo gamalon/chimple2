@@ -10,6 +10,7 @@ import com.gamelanlabs.chimple2.solvers.MetropolisHastingsSolver;
  *
  * @author BenL
  * @author dicai
+ * @author jake.neely
  *
  */
 
@@ -191,13 +192,24 @@ public abstract class ChimpleProgram implements Cloneable {
 	}
 
 	/**
-	 * Uniform(0, 1) ERP.
+	 * Uniform(walk_sigma) ERP with random walk.
 	 * 
 	 * @param	name
+	 * @param 	walk_sigma
 	 * @return	value
 	 */
-	public double chimpRand(String name) {
-		return factory.makeMonkey(ChimpRand.class, name);
+	public double chimpRand(String name, double walk_sigma) {
+		return factory.makeMonkey(ChimpRand.class, name, walk_sigma);
+	}
+	
+	/**
+	 * Uniform() ERP
+	 * @param name
+	 * @return value
+	 */
+	public double chimpRand(String name){
+		//default walk_sigma of 100 
+		return factory.makeMonkey(ChimpRand.class, name, 100.0);
 	}
 	
 	/**
