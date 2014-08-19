@@ -1,0 +1,60 @@
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx, verbatim}
+\usepackage{listings, color}
+\usepackage{booktabs}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{verbatim, graphicx}
+\usepackage[linkbordercolor={1 0 0}, colorlinks=true, urlcolor=blue, linkcolor=blue]{hyperref}
+\usepackage{sectsty}
+\usepackage{algorithm, algpseudocode}
+\usepackage{titling}
+\renewcommand{\maketitlehooka}{\sffamily}
+\allsectionsfont{\sffamily\mdseries\upshape}
+
+% useful macros
+\newcommand{\eqdef}{=\vcentcolon}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\Om}{\Omega}
+\newcommand{\sa}{\sigma\text{-algebra}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\text{Var}}
+
+\newtheorem*{mydef}{Definition}
+\newtheorem*{mythm}{Theorem}
+\newtheorem*{myex}{Example}
+\newtheorem*{remark}{Remark}
+
+\makeatletter
+\renewcommand{\@chapapp}{}% Not necessary...
+\newenvironment{chapquote}[2][2em]
+  {\setlength{\@tempdima}{#1}%
+   \def\chapquote@author{#2}%
+   \parshape 1 \@tempdima \dimexpr\textwidth-2\@tempdima\relax%
+   \itshape}
+  {\par\normalfont\hfill--\ \chapquote@author\hspace*{\@tempdima}\par\bigskip}
+\makeatother
+
+\lstset{language=Java}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{mygray},
+  commentstyle=\itshape\color{mymauve},
+  identifierstyle=\color{blue},
+  stringstyle=\color{mygreen}
+}
+
+% page style stuff
+\pagestyle{fancyplain}

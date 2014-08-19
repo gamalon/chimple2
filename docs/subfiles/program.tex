@@ -1,0 +1,145 @@
+\chapter{Chimple Program}
+
+In this section, we focus on how to express a generative model as a Chimple
+    program and detail the components involved.
+Throughout this section, we reference terms from the Chimple language.
+We summarize these terms in Table \ref{terms}.
+
+We begin by presenting a simple example before delving into Chimple details.
+
+\section{How to write a Chimple program}
+
+\subsection{Random Coin Example}
+
+Consider the following problem:
+you have a biased coin, which you flip $N$ times and land as either heads or tails.
+A generative model might be
+\begin{enumerate}
+   \item Draw a weight uniformly $\theta \sim \text{Beta}(1,1)$
+   \item For $n \in \{1, \ldots, N\}$:
+    \begin{enumerate}
+        \item Flip the coin $X_n \sim \text{Bern}(\theta)$
+    \end{enumerate}
+\end{enumerate}
+The generative model above can be expressed in Chimple as
+
+\begin{center}
+\begin{lstlisting}[style=customc]
+    public Object run(Object... args)
+    {
+        // Generate a random weight for the coin
+        double theta = chimpRand("weight");
+
+        // Flip the coin N times
+        for (int n = 0; n < N; n++)
+            X[n] = chimpFlip(("X" + n, theta));
+
+        return X;
+    }
+\end{lstlisting}
+\end{center}
+
+\label{priorsolver}
+\subsection{Chimple program components}
+
+In each Chimple program, there are a few main components:
+\begin{enumerate}
+    \item All programs must extend ChimpleProgram, an abstract class which
+    holds many program-specific objects.
+    \item All programs must implement the run function. This is where the generative model is
+    implemented, as in the coin example.
+    \item In the main function, you run the program with a solver.
+        We will discuss this in more detail later.
+        To run the program ``forward" and generate data, you can use the solver
+        \texttt{PriorSolver}, as seen in the example below.
+        This simply runs the code in the program's run function.
+\end{enumerate}
+%
+\begin{center}
+\begin{lstlisting}[style=customc]
+    public class MyProgram extends ChimpleProgram
+    {
+        @Override
+        public Object run(Object... args)
+        {
+            double[] data = new double[N];
+
+            // Implement program here
+            ...
+
+            // Return the generated data
+            return data;
+        }
+
+        public static void main(String[] args)
+        {
+            MyProgram program = new MyProgram();
+
+            Solver s = PriorSolver();
+
+            // TODO: fill in actual code
+        }
+    }
+\end{lstlisting}
+\end{center}
+%
+Note that the program above only specifies a generative model--no inference
+    is performed with observed data, which we discuss in Chapter \ref{solvers}.
+
+For a full demo, see \texttt{RandomCoin.java}. In the demos package of Chimple,
+    we have included a suite of other demos.
+
+
+\section{Chimple Monkeys}
+
+In Chimple, we have included a library of \emph{monkeys}, or elemental random
+primitives (ERPs), which are atomic random functions combined to create more complex functions.
+In the example above, we use the ERP \texttt{chimpRand}, which generates a
+value between 0 and 1 from Uniform distribution.
+
+Most of the ERPs represent simple statistical distribution and their properties,
+     also containing specific functions used for Chimple's inference engine.
+     We will discuss ERPs more from the context of inference in Section \ref{solvers}.
+
+We summarize the currently available ERPs in Table \ref{monkeys}.
+
+\begin{figure}
+   \centering
+   \begin{tabular}{ccc}
+    \toprule
+       ERP Name & Arguments & Description \\
+    \midrule
+        chimpBeta & \\
+        chimpDirichlet & \\
+        chimpDiscrete & \\
+        chimpFlip & \\
+        chimpGamma & \\
+        chimpNormal & \\
+        chimpPermutation & \\
+        chimpPoisson & \\
+        chimpRand & \\
+    \bottomrule
+   \end{tabular}
+   \caption{Current library of ERPs in Chimple.}
+   \label{monkeys}
+\end{figure}
+
+\begin{figure}
+\centering
+\small
+\begin{tabular}{ccc}
+\toprule
+   Chimple Name & Description & Associated Class(es) \\
+\midrule
+    Monkey & Abstract random variable, all monkeys extend this & Monkey.java \\
+    Banana & Generic type for a Monkey  & Monkey.java \\
+    Zookeeper & Bookkeeping for all Monkeys, used by the solver  & Zookeeper.java \\
+    MonkeyCage & A program trace; stores Monkeys & MonkeyCage.java \\
+    ChimpleProgram & Base program that all programs extend & ChimpleProgram.java \\
+    Energy & Negative log likelihood & - \\
+\bottomrule
+\end{tabular}
+\caption{Terms used in Chimple related to writing a probabilistic program.}
+\label{terms}
+\normalsize
+\end{figure}
