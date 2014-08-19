@@ -210,9 +210,9 @@ public abstract class ChimpleProgram implements Cloneable {
 	
 	public double chimpRand(String name){
 		//default walk_sigma of 100 
-		Object[] blah = new Object[1];
-		blah[0] = null;
-		return factory.makeMonkey(ChimpRand.class, name,blah);
+		Object[] nullPossibility = new Object[1];
+		nullPossibility[0] = null;
+		return factory.makeMonkey(ChimpRand.class, name,nullPossibility);
 	}
 	
 	/**
