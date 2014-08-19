@@ -10,7 +10,7 @@ package com.gamelanlabs.chimple2.monkeys;
  *
  */
 public class ChimpRand extends Monkey<Double> {	
-	protected double walk_sigma;
+	protected Double walk_sigma;
 	/**
 	 * Generates a proposal from the prior.
 	 * 
@@ -29,8 +29,13 @@ public class ChimpRand extends Monkey<Double> {
 	 */
 	@Override
 	public Double propose() {
-		value = Math.abs(getRandom().nextGaussian()*walk_sigma + getValue());
-		return generate();
+		if (walk_sigma == null){
+			return generate();
+		}
+		else{
+			value = Math.abs(getRandom().nextGaussian()*walk_sigma + getValue());
+			return getValue();
+		}
 	}
 
 	/**
@@ -60,8 +65,7 @@ public class ChimpRand extends Monkey<Double> {
      *
      * @param	pars	The pair of parameters
      */
-    @Override
-    public void setParams(Object... pars) {
+    public void setParams(Object...pars) {
         walk_sigma = (Double)pars[0];
     }
 	
@@ -83,7 +87,7 @@ public class ChimpRand extends Monkey<Double> {
 	 */
 	@Override
 	public boolean paramsChanged(Object... newparams) {
-		return walk_sigma != (double) newparams[0];
+		return walk_sigma != (Double) newparams[0];
 	}
 
 }
