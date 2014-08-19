@@ -4,4 +4,4 @@
 .pydevproject
 *.iml
 *.idea*
-.class
+*.class
