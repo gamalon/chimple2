@@ -3,12 +3,14 @@ package com.gamelanlabs.chimple2.monkeys;
 
 /**
  * Uniform distribution ERP. Returns values from 0.0 to 1.0.
- * Has no parameters (really? re-scale the output yourself).
+ * Optional random walk parameter
  * 
  * @author BenL
+ * @author jake.neely
  *
  */
 public class ChimpRand extends Monkey<Double> {	
+	protected Double walk_sigma;
 	/**
 	 * Generates a proposal from the prior.
 	 * 
@@ -27,8 +29,13 @@ public class ChimpRand extends Monkey<Double> {
 	 */
 	@Override
 	public Double propose() {
-		// Conditional proposal kernel is the same as independent proposal kernel.
-		return generate();
+		if (walk_sigma == null){
+			return generate();
+		}
+		else{
+			value = Math.abs(getRandom().nextGaussian()*walk_sigma + getValue());
+			return getValue();
+		}
 	}
 
 	/**
@@ -54,13 +61,22 @@ public class ChimpRand extends Monkey<Double> {
 	}
 	
 	/**
+     * Sets parameters
+     *
+     * @param	pars	The pair of parameters
+     */
+    public void setParams(Object...pars) {
+        walk_sigma = (Double)pars[0];
+    }
+	
+	/**
 	 * Returns a safe copy of the parameters of this monkey.
 	 * 
 	 * @return	params
 	 */
 	@Override
-	public Object[] getParams() {
-		return new Object[] {};
+	protected Object[] getParams() {
+		return new Object[] {walk_sigma};
 	}
 	
 	/**
@@ -71,17 +87,7 @@ public class ChimpRand extends Monkey<Double> {
 	 */
 	@Override
 	public boolean paramsChanged(Object... newparams) {
-		return false;
+		return walk_sigma != (Double) newparams[0];
 	}
 
-	/**
-	 * Tells the monkey how to make Bananas.
-	 * 
-	 * Makes a safe copy of the instructions (ie. not
-	 * by reference).
-	 * 
-	 * @param	params		Parameters
-	 */
-	@Override
-	public void setParams(Object... params) { }
 }
