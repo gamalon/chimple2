@@ -15,7 +15,7 @@ public abstract class Monkey<Banana> implements Cloneable {
 	/**
 	 * The local banana broker.
 	 */
-	private Zookeeper zookeeper = null;
+	protected Zookeeper zookeeper = null;
 	
 	/**
 	 * Make sure to pet your monkeys regularly.
