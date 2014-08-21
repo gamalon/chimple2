@@ -321,4 +321,37 @@ public abstract class ChimpleProgram implements Cloneable {
 	public int[] chimpPermutation(String name, int n) {
 		return factory.makeMonkey(ChimpPermutation.class, name, n);
 	}
+	
+	/**
+	 * N(mean vector, covariance matrix) ERP with N(value, walk_covariance) proposal kernel.
+	 * 
+	 * @param	name
+	 * @param	mus			The mean vector of the prior
+	 * @param	sigmas		The covariance matrix of the prior
+	 * @param	walk_sigmas	The covariance of the proposal kernel
+	 * @return	value 		A double array of samples
+	 */
+	public double[] chimpMultivariateNormal(String name, double[] mus, double[][] sigmas, double[][] walk_sigmas) {
+		return factory.makeMonkey(ChimpMultivariateNormal.class, name, mus, sigmas, walk_sigmas);
+	}
+
+	/**
+	 * N(mean vector, covariance matrix) ERP with N(value, covariance/10) proposal kernel.
+	 * 
+	 * @param	name
+	 * @param	mus			The mean vector of the prior
+	 * @param	sigmas		The covariance matrix of the prior
+	 * @return	value 		A double array of samples
+	 */
+	public double[] chimpMultivariateNormal(String name, double[] mus, double[][] sigmas) {
+		// Default proposal kernel (random walk) variance is variance/10.
+		double[][] walk_sigmas = sigmas.clone();
+		for (int i=0;i<sigmas.length;i++)
+		{
+			for (int j=0;j<sigmas[0].length;j++)
+				walk_sigmas[i][j] = walk_sigmas[i][j]*.1;
+		}
+		
+		return chimpMultivariateNormal(name, mus, sigmas, walk_sigmas);
+	}
 }
