@@ -313,8 +313,8 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @return	value
 	 */
 		
-	public double chimpStudentT(String name, double mean, double variance, double dof, double walk_variance) {
-		return factory.makeMonkey(ChimpStudentT.class, name, mean, variance, dof, walk_variance);
+	public double chimpStudentsT(String name, double mean, double variance, double dof, double walk_variance) {
+		return factory.makeMonkey(ChimpStudentsT.class, name, mean, variance, dof, walk_variance);
 	}
 	
 	/**
@@ -327,8 +327,8 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @return	value
 	 */
 		
-	public double chimpStudentT(String name, double mean, double variance, double dof) {
-		return factory.makeMonkey(ChimpStudentT.class, name, mean, variance, dof, variance/10);
+	public double chimpStudentsT(String name, double mean, double variance, double dof) {
+		return factory.makeMonkey(ChimpStudentsT.class, name, mean, variance, dof, variance/10);
 	}
 
 	/**
