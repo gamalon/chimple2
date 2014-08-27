@@ -269,11 +269,12 @@ public abstract class ChimpleProgram implements Cloneable {
      * @param	beta
      * @return	value
      */
+    
     public double chimpGamma(String name, double alpha, double beta) {
         return chimpGamma(name, alpha, beta, 0.1*alpha/(beta*beta));
     }
 
-	/**
+    /**
 	 * N(mean, variance) ERP with N(value, walk_variance) proposal kernel.
 	 * 
 	 * @param	name
@@ -282,10 +283,12 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @param	walk_variance	The variance of the proposal kernel
 	 * @return	value
 	 */
+    
 	public double chimpNormal(String name, double mean, double variance, double walk_variance) {
-		return factory.makeMonkey(ChimpNormal.class, name, mean, variance, walk_variance);
+		return factory.makeMonkey(ChimpNormal.class, name, mean, variance,  walk_variance);
 	}
 
+	
 	/**
 	 * N(mean, variance) ERP with N(value, variance/10) proposal kernel.
 	 * 
@@ -293,10 +296,39 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @param	mean			The mean of the prior
 	 * @param	variance		The variance of the prior
 	 * @return	value
-	 */
+	 */	
+	
 	public double chimpNormal(String name, double mean, double variance) {
 		// Default proposal kernel (random walk) variance is variance/10.
 		return factory.makeMonkey(ChimpNormal.class, name, mean, variance, variance / 10);
+	}
+	
+	/**
+	 * ST(mean, variance, dof) ERP with N(value, walk_variance) proposal kernel.
+	 * 
+	 * @param	name
+	 * @param	mean			The mean of the prior
+	 * @param	variance		The variance of the prior
+	 * @param	dof         	The degrees of freedom of the prior
+	 * @return	value
+	 */
+		
+	public double chimpStudentsT(String name, double mean, double variance, double dof, double walk_variance) {
+		return factory.makeMonkey(ChimpStudentsT.class, name, mean, variance, dof, walk_variance);
+	}
+	
+	/**
+	 * ST(mean, variance, dof) ERP with N(value, variance/10) proposal kernel.
+	 * 
+	 * @param	name
+	 * @param	mean			The mean of the prior
+	 * @param	variance		The variance of the prior
+	 * @param   dof 			The degrees of freedom of the prior
+	 * @return	value
+	 */
+		
+	public double chimpStudentsT(String name, double mean, double variance, double dof) {
+		return factory.makeMonkey(ChimpStudentsT.class, name, mean, variance, dof, variance/10);
 	}
 
 	/**
