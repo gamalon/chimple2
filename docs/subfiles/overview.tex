@@ -1,0 +1,36 @@
+- Zookeeper - The zookeeper class contains a MonkeyCage class object and a RandomPlus class object. When a chimp* call with a specific name is reached in the course of running the program, its _touched_ property is set to true. The function of the zookeeper class is to hold a set of instances of variables (a MonkeyCage), reset the _touched_ property on them, and remove any variables that are _untouched_. (TODO: Consider whether Zookeeper's killUntouched is still merited; the Weak/Strong MonkeyFactories directly delete some monkeys, similar to the killUntouched functionality) The effective use of the zookeeper is to remove Monkeys from the MonkeyCage if they aren't touched; in standard usage, touched means that a variable existed in the previous trace of the probabalistic program. Therefore, previously tracked variables, when calling the killUntouched method, are removed if they no longer exist.
+In future development, Zookeeper will likely track and store information for special monkeys we want to do tests on.
+
+- MonkeyCage is at one level deeper, and contains an arraylist of Monkey<?> (of arbitrary type) and a Hashmap for retrieving references to them. It also contains some utility methods for getting the list of monkeys and confirming that one exists. In general, MonkeyCage should contain the infrastructure around a trace. In future development, it is likely that the MonkeyCage will contain a trie/prefix tree rather than a straight HashMap. This is to allow easy sorting and hierarchical organization of the Monkeys for things like specialty solvers.
+
+- MHUtils.WeakMonkeyFactory - has a reference to a zookeper initialized in the constructor. The WeakMonkeyFactory is a memoization strategy that implements the makeMonkey method. The content of the method is that it takes the name of a monkey it is asked to create, grabs an identically named monkey in the trace, and attempts to cast it into the class that makeMonkey was called with. That casting can fail if, for some reason, that monkey used to be a different type of variable or distribution. If it fails, it deletes the monkey from the zookeeper's MonkeyCage.
+(TODO: This seems slightly strange to rely on a casting error, is this what we want it to do? When is deleting the monkey the appropriate strategy as opposed to throwing an error? For instance, if I accidentally named two monkeys the same thing, this behavior would be pathological)
+If the variable did not previously exist (couldn't find it or couldn't cast it properly) or the input parameters have changed, we create a new instance of it, initialize it, _touch_ it and store it. If it did previously exist, we grab the old value. This business with the parameters changing is the hallmark of weak stochastic reuse; if the variance of my chimpNormal, for instance, was a chimpRand, then WMF will generate a new chimpNormal every time the upstream value changes. This behavior is not always desired.
+
+- MHUtils.StrongMonkeyFactory - this is almost identical to Weak*, except that variables are only regenerated if they did not previously exist. This behavior is useful in that it retains some information about earlier guesses, but may slow down solution in some cases. Carefully consider the features of your model.
+
+- Monkey - the Monkey<Banana> class is an abstract class intended as a base for constructing ERP (elementary random primitives). From the perspective of ERPs, it contains a current value and unimplemented methods for proposing a new value, generating an initial value, calculating a likelihood, and calculating a local hastings term. Architecturally, it contain a variable indicating that it has been touched by the probabilistic program and a reference to its Zookeeper (discussed above). (TODO: Consider simplifying the Zookeeper, MonkeyCage, Monkey relationship; as is, all three interact with each other, and I'm not sure the complexity is merited. Each is evolving its own purpose now, but mainly for usability rather than deep reasons of efficiency)
+
+- Solver - this is an abstract class that implements Query. It contains a reference to its probabilistic program that is being run, its arguments and costfunctions, and holds the Zookeeper controlling the trace, as well as an ArrayList of samples. It also functions to determine a ChimpleProgram's factor and zookeeper at the outset.
+Other methods: energy -- takes a monkeycage and cost function and gathers all the energy for scoring. save -- adds a sample to the accepted list.
+
+- MetropolisHastingsSolver - for the most part implements an MH solver by extending Solver. Includes all accept and reject steps. It can be manually set to verbosely output the accept/reject and the calculated energies. The unique functionality of the MH solver is to pick a monkey to regenerate and calculate the Hastings term for that choice (penalty) The solver must be called with references to the program and the parameters for the solutions (samples, burnin, spacing/thinning)
+
+
+
+
+
+Minor Methods
+-----------
+
+EndCondition is a simple extension of Exception that carries a final sample with it. It can be be caught as a way to end a sampler
+
+CostFunction is an abstraction that allows us to specify a CostFunction outside of the probabilistic program; it can access any internal Monkeys. It is mostly intended as a modular way to condition on observations, however it can also represent complicated likelihoods without obfuscating your probabilistic program.
+
+MonkeyFactory is an interface description that is implemented by memoization strategies; it specifies that (given a generic type called Banana) a class that implements it has a method makeMonkey that returns type Banana and takes as its argument a class that extends Monkey<Banana>, called type, a name string for the Monkey, and the parameters. Implemented by Strong and Weak Monkey Factories.
+
+Query is an interface that signifies that a class is intended to recover a response from the probabilistic program; it implements get().
+
+SolverFactory is an abstract class that contains a HashSet of the solvers and is constructed to return any of the set of default solvers, as well as external solvers that are registered with the set.
+
+RandomPlus - this class is just a simple way to contain the samplers and a source of randomness for them. Ultimately new samplers for distributions should be migrated here for unification. Particularly for debugging purposes, doing so means we can reliably use the same random seed.
