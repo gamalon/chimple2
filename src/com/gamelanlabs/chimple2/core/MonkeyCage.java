@@ -1,7 +1,6 @@
 package com.gamelanlabs.chimple2.core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -14,6 +13,7 @@ import com.gamelanlabs.chimple2.monkeys.Monkey;
  * the internal cost (but not the external cost).
  * 
  * @author BenL
+ * @author AllenC
  *
  */
 public final class MonkeyCage {
@@ -25,7 +25,7 @@ public final class MonkeyCage {
 	/**
 	 * Treat them as you would your own children.
 	 */
-	private final HashMap<String, Monkey<?>> monkeynames;
+	private final MonkeyMap monkeynames;
 	
 	/**
 	 * Energy of internal cost functions. This is from calling addCost()
@@ -47,7 +47,7 @@ public final class MonkeyCage {
 	 */
 	public MonkeyCage() {
 		monkeys = new ArrayList<Monkey<?>>();
-		monkeynames = new HashMap<String, Monkey<?>>();
+		monkeynames = new MonkeyMap();
 		internalenergy = 0;
 		tag = null;
 	}
@@ -70,7 +70,7 @@ public final class MonkeyCage {
 	 */
 	public void del(Monkey<?> m) {
 		monkeys.remove(m);
-		monkeynames.values().remove(m);
+		monkeynames.remove(m);
 	}
 	
 	/**
@@ -131,6 +131,29 @@ public final class MonkeyCage {
 	}
 	
 	/**
+	 * Gets all the monkeys that correspond to a given prefix. Performed in place.
+	 * 
+	 * @param	prefix		All monkeys with this as the prefix will be found
+	 * @return	monkeys		The corresponding monkeys
+	 */
+	public ArrayList<Monkey<?>> getPrefix(String prefix) {
+		return monkeynames.getPrefix(prefix);
+	}
+	
+	/**
+	 * Gets all the monkeys that correspond to a given prefix. In this case,
+	 * the prefix has been already split up into non-delimited pieces (if there
+	 * are delimiters in the pieces, an error will be spit out). Performed in
+	 * place.
+	 * 
+	 * @param	split		An array with all of the pieces of the desired prefix
+	 * @return	monkeys		Monkeys corresponding to this sequence of prefixes
+	 */
+	public ArrayList<Monkey<?>> getPrefix(String[] split) {
+		return monkeynames.getPrefix(split);
+	}
+	
+	/**
 	 * Clones every monkey in the cage, and clones the physical cage.
 	 * 
 	 * @return	cage	Cloned MonkeyCage
@@ -142,6 +165,7 @@ public final class MonkeyCage {
 			Monkey<?> newmonkey = entry.getValue().clone();
 			newcage.add(entry.getKey(), newmonkey);
 		}
+		
 		return newcage;
 	}
 }
