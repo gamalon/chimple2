@@ -200,13 +200,13 @@ public class MonkeyMap {
 	 * @param	prefix		All monkeys with this as the prefix will be found
 	 * @return	monkeys		The corresponding monkeys
 	 */
-	public ArrayList<Monkey<?>> getPrefix(String prefix) {
+	public ArrayList<Monkey<?>> getPrefixMonkeys(String prefix) {
 		String[] split = prefix.split(delimiter);
 		
 		if(prefix.contains(delimiter)) {
-			return getPrefix(split, 0);
+			return getPrefixMonkeys(split, 0);
 		} else {
-			return getPrefix(split);
+			return getPrefixMonkeys(split);
 		}
 	}
 	
@@ -222,7 +222,7 @@ public class MonkeyMap {
 	 * @param	split		An array with all of the pieces of the desired prefix
 	 * @return	monkeys		Monkeys corresponding to this sequence of prefixes
 	 */
-	public ArrayList<Monkey<?>> getPrefix(String[] split) {
+	public ArrayList<Monkey<?>> getPrefixMonkeys(String[] split) {
 		if(split.length == 1) {
 			// Since we consciously chose not to branch the monkeys with no delimiters,
 			// we need to find the ones that we need
@@ -235,8 +235,26 @@ public class MonkeyMap {
 			return monkeys;
 			
 		} else {
-			return getPrefix(split, 0);
+			return getPrefixMonkeys(split, 0);
 		}
+	}
+	
+	/**
+	 * Return the keyset of the HashMap corresponding to the prefix
+	 * @param prefix
+	 * @return
+	 */
+	public Set<String> getPrefixNames(String prefix){
+		Set<String> names = new HashSet<String>();
+		if (prefixes.contains(prefix)){
+			names.addAll(this.children.get(prefixes.indexOf(prefix)).keySet());
+		}
+		else {
+			for (MonkeyMap child : children)
+				names.addAll(child.getPrefixNames(prefix));
+		}
+		return names;
+			
 	}
 	
 	/**
@@ -294,7 +312,7 @@ public class MonkeyMap {
 	 * @param 	val			Layer that we are at
 	 * @return	monkeys		All of the monkeys that have prefix that is the input string
 	 */
-	private ArrayList<Monkey<?>> getPrefix(String[] split, int val) {
+	private ArrayList<Monkey<?>> getPrefixMonkeys(String[] split, int val) {
 		// end condition for the root of the nodes that we are getting
 		if(split.length == val) {
 			return values();
@@ -304,7 +322,7 @@ public class MonkeyMap {
 				// TODO: Implement a new exception that handles missing prefixes and other things
 				return new ArrayList<Monkey<?>>();
 			} else {
-				return this.children.get(index).getPrefix(split, ++val);
+				return this.children.get(index).getPrefixMonkeys(split, ++val);
 			}
 		}
 	}

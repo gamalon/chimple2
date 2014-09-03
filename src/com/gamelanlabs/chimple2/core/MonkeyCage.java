@@ -136,8 +136,8 @@ public final class MonkeyCage {
 	 * @param	prefix		All monkeys with this as the prefix will be found
 	 * @return	monkeys		The corresponding monkeys
 	 */
-	public ArrayList<Monkey<?>> getPrefix(String prefix) {
-		return monkeynames.getPrefix(prefix);
+	public ArrayList<Monkey<?>> getPrefixMonkeys(String prefix) {
+		return monkeynames.getPrefixMonkeys(prefix);
 	}
 	
 	/**
@@ -149,9 +149,26 @@ public final class MonkeyCage {
 	 * @param	split		An array with all of the pieces of the desired prefix
 	 * @return	monkeys		Monkeys corresponding to this sequence of prefixes
 	 */
-	public ArrayList<Monkey<?>> getPrefix(String[] split) {
-		return monkeynames.getPrefix(split);
+	public ArrayList<Monkey<?>> getPrefixMonkeys(String[] split) {
+		return monkeynames.getPrefixMonkeys(split);
 	}
+	/**
+	 *  Gets the names of all the monkeys associated with a given prefix
+	 */
+	public Set<String> getPrefixNames(String prefix) {
+		return monkeynames.getPrefixNames(prefix);
+	}
+	
+	/**
+	 * Gets the names of all monkeys associated with a presplit prefix set
+	 * TODO: complete this appropriately as above
+	 */
+	
+	public ArrayList<String> getPrefixNames(String[] split) {
+		return null;
+	}
+	
+	
 	
 	/**
 	 * Clones every monkey in the cage, and clones the physical cage.
