@@ -56,14 +56,15 @@ public class ChimpDiscrete extends Monkey<Integer> {
 	public Integer propose() {
 		double sum = sum() - probs[value];
 		double rand = getRandom().nextDouble()*sum;
-		
+		System.out.println(sum);
 		// Initialize with the last element
-		if(value != probs.length - 1) {
-			value = probs.length - 1;
-		} else {
-			value = probs.length - 2;
-		}
 		
+//		if(value != probs.length - 1) {
+//			value = probs.length - 1;
+//		} else {
+//			value = probs.length - 2;
+//		}
+//		
 		// Draw from the discrete distribution,
 		// skipping the current value.
 		for(int i = 0; i < probs.length; i++) {
@@ -71,6 +72,7 @@ public class ChimpDiscrete extends Monkey<Integer> {
 				continue;
 			}
 			rand -= probs[i];
+			System.out.println("Rand is: " + rand);
 			if (rand < 0) {
 				value = i;
 				break;
