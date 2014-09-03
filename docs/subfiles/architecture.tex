@@ -1,0 +1,59 @@
+\chapter{Architecture}
+
+\noindent
+
+\section{Major Methods}
+The following are the major architectural features of chimple2.
+
+\subsection{Monkey}
+The Monkey class is an abstract class intended as the base for construction of elementary random primitives. It contains a current value and unimplemented methods for proposing new values, generating an initial value, calculating a likelihood, and calculating a local Hastings term. 
+
+\subsection{MonkeyCage}
+MonkeyCage contains an ArrayList of Monkeys (of arbitrary type) and a hashmap for retrieving references to them. It also contains some utility methods for retrieving the list of monkeys and confirming existence. In general, MonkeyCage contains the infrastructure of the trace. 
+
+In the future, MonkeyCage will contain a trie rather than a straight hashmap to allow for easy sorting and hierarchical organization of the Monkeys for things like specialty solvers.
+
+\subsection{Solver}
+Solver is an abstract class that implements Query. It contains a reference to its probabilistic program, its arguments, and cost functions, and holds the Zookeeper controlling the trace as well as an ArrayList of samples. 
+
+\subsubsection{MetropolisHastingsSolver}
+
+MetropolisHastingsSolver is a straightforward implementation of Metropolis Hastings MCMC. It includes all accept and reject steps. It can be manually set to verbose outputs. The unique functionality of the MH solver is to pick a monkey to regenerate and calculate the Hastings term for that choice. The solver must be called with references to the program and the parameters for the solutions (samples, burn in, spacing/thinning).
+
+\subsection{StrongMonkeyFactory}
+StrongMonkeyFactory is a memoization strategy that implements strong stochastic reuse, i.e. variables are only regenerated if they did not previously exist.
+
+\subsection{WeakMonkeyFactory}
+WeakMonkeyFactory is a memoization strategy that implements the makeMonkey method, which takes the name of a monkey, grabs an identically named monkey in the trace, and attempts to cast it into the class with which it was called. WeakMonkeyFactory implements weak stochastic reuse, i.e. if variables did not previous exist, or if upstream parameters changed, a new instance of the monkey is created and touched. 
+
+In the future, we will address casting errors resulting in deletion of variable instances.
+
+\subsection{Zookeeper}
+The zookeeper class contains a MonkeyCage class object and a RandomPlus class object. When a chimp call with a specific name is reached in the course of the program, its touched property is set to true. In standard usage, touched means that the variable existed in the previous trace of the probabilistic program. The function of the zookeeper class is to hold a set of variable instances, reset the touched property on them, and remove any variables that are untouched. 
+
+In future development, Zookeeper will likely track and store information for special ERPs on which we want to do tests.
+
+\section{Minor Methods}
+
+\subsection{CostFunction}
+CostFunction is an abstraction that allows specification of a cost function outside of the probabilistic program. It can access any internal monkey. It is mostly intended as a modular way to condition on observations, however it can also represent complicated likelihoods without obfuscating the probabilistic program.
+
+\subsection{EndCondition}
+EndCondition is a simple extension of Exception that carries a final sample with it. It is a specific way to end a sampler.
+
+\subsection{MonkeyFactory}
+MonkeyFactory is a interface description that is implemented by memoization strategies. It specifies that (given a generic type called Banana) a class that implements it has a method makeMonkey that returns type Banana and takes as its argument a class that extends Monkey$<$Banana$>$, called type, a name string for the Monkey, and the parameters.
+
+\subsection{Query}
+Query is an interface that signifies that a class is intended to recover a response from the probabilistic program.
+
+\subsection{RandomPlus}
+RandomPlus is a simple way to contain the samplers and a source of randomness for them. Ultimately, new samplers for distributions should be migrated here for unification and for debugging purposes. 
+
+\subsection{SolverFactory}
+SolverFactory is an abstract class that contains a HashSet of the solvers and is constructed to return any of the set of default solvers, as well as external solvers that are registered with the set.
+
+
+
+
+
