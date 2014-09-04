@@ -58,11 +58,11 @@ public class ChimpDiscrete extends Monkey<Integer> {
 		double rand = getRandom().nextDouble()*sum;
 		
 		// Initialize with the last element
-		if(value != probs.length - 1) {
-			value = probs.length - 1;
-		} else {
-			value = probs.length - 2;
-		}
+//		if(value != probs.length - 1) {
+//			value = probs.length - 1;
+//		} else {
+//			value = probs.length - 2;
+//		}
 		
 		// Draw from the discrete distribution,
 		// skipping the current value.
