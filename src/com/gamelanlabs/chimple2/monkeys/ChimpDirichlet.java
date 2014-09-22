@@ -51,7 +51,7 @@ public class ChimpDirichlet extends Monkey<double[]> {
 		value[ii] = ap;
 		value[jj] = bp;
 
-		return value;
+		return getValue();
 	}
 	
 	/**
@@ -66,10 +66,14 @@ public class ChimpDirichlet extends Monkey<double[]> {
 		double energy = 0;
 		double sum = 0;
 		for(int i = 0; i < alphas.length; i++) {
-			energy -= (alphas[i]-1)*Math.log(value[i]);
-			energy += Gamma.logGamma(alphas[i]);
+			if ((alphas[i]-1)!=0){
+				energy -= (alphas[i]-1)*Math.log(value[i]);
+				energy += Gamma.logGamma(alphas[i]);
+				}
 			sum += alphas[i];
 		}
+		//System.out.println(sum);
+		//System.out.println(energy);
 		energy -= Gamma.logGamma(sum); 
 		return energy;
 	}
@@ -128,4 +132,15 @@ public class ChimpDirichlet extends Monkey<double[]> {
 	public boolean paramsChanged(Object... newparams) {
 		return Arrays.equals(alphas, (double[]) newparams[0]);
 	}
+	
+
+//	@Override
+//	public ChimpDirichlet clone() {
+//		ChimpDirichlet dolly;
+//		dolly = new ChimpDirichlet();
+//		dolly.setZookeeper(zookeeper);
+//		dolly.setParams(getParams());
+//		dolly.value = getValue();
+//		return dolly;
+//	}
 }

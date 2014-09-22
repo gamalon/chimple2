@@ -222,7 +222,7 @@ public abstract class ChimpleProgram implements Cloneable {
 	 * @param	alphas
 	 * @return	value
 	 */
-	public double chimpBeta(String name, Double[] alphas) {
+	public double chimpBeta(String name, double[] alphas) {
 		return factory.makeMonkey(ChimpBeta.class, name, alphas);
 	}
 
