@@ -26,7 +26,7 @@ public abstract class Solver implements Query {
 	public Object[] arguments;
 	public CostFunction costfunction;
 	public Zookeeper zookeeper = new Zookeeper();
-	private final ArrayList<Object> results;
+	protected final ArrayList<Object> results;
 
 	/**
 	 * Constructor
