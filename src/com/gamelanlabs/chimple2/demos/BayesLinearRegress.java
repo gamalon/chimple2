@@ -5,7 +5,6 @@ import java.util.Random;
 
 import com.gamelanlabs.chimple2.core.CostFunction;
 import com.gamelanlabs.chimple2.solvers.MetropolisHastingsSolver;
-import com.gamelanlabs.chimple2.solvers.PriorSolver;
 import com.gamelanlabs.chimple2.solvers.Solver;
 
 /**
@@ -108,7 +107,6 @@ public class BayesLinearRegress extends Demo
 	 */
 	@Override
 	public void display(ArrayList<Object> results) {
-        int length = results.size();
         double[] temp = (double[])results.get(0);
 
         for (int i = 0; i < temp.length; i++)
