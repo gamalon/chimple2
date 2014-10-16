@@ -134,6 +134,8 @@ public class MetropolisHastingsSolver extends Solver {
 		double energy = energy(result, zookeeper.cage);
 		double penalizedenergy = energy + penalty(zookeeper.cage, oldcage);
 		
+		//System.out.println(energy);System.out.println(penalizedenergy);
+		
 		// Acceptance ratio
 		Double rand = zookeeper.random.nextDouble();
 		Double acceptanceratio = Math.exp((-penalizedenergy+lastenergy)/temperature);
@@ -185,6 +187,7 @@ public class MetropolisHastingsSolver extends Solver {
 	 * Derive a traceMH proposal move from the current cage.
 	 */
 	protected void pointMutation() {
+		// TODO: We probably shouldn't copy the full ArrayList of monkey names every time; nothing is modified, is there something wrong with grabbing an ArrayList reference in place?
 		ArrayList<String> names = new ArrayList<String>(zookeeper.cage.getNames());
 		
 		// Pick an active monkey to re-trace from. Tag the cage with the name of this monkey.
@@ -212,6 +215,7 @@ public class MetropolisHastingsSolver extends Solver {
 		double penalty = 0;
 		
 		// Penalize more variables (part of Hastings term, actually)
+		// TODO: This is only the true penalty for uniform choices of monkeys
 		penalty += Math.log(((double) proposalcage.size())/oldcage.size());
 
 		/**
