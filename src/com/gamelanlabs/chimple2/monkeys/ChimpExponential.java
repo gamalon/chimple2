@@ -36,7 +36,8 @@ public class ChimpExponential extends Monkey<Double> {
 	@Override
 	public double energy() {
 //		return -(new ExponentialDistribution(lambda)).logDensity(value);
-		return -1*Math.log(lambda * Math.exp(-1*lambda*value));
+//		return -1*Math.log(lambda * Math.exp(-1*lambda*value));
+		return lambda*value - Math.log(lambda);
 	}
 	
 	@Override
