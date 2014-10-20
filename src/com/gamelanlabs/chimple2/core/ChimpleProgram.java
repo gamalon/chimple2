@@ -247,6 +247,17 @@ public abstract class ChimpleProgram implements Cloneable {
 	public int chimpDiscrete(String name, double[] probs) {
 		return factory.makeMonkey(ChimpDiscrete.class, name, probs);
 	}
+	
+	/**
+	 * Exponential(lambda) ERP
+	 * @param name
+	 * @param lambda
+	 * @param jump
+	 */
+	
+	public double chimpExponential(String name, double lambda){
+		return factory.makeMonkey(ChimpExponential.class,name,lambda);
+	}
 
     /**
      * Gamma(alpha, beta) ERP.

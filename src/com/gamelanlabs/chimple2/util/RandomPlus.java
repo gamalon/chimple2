@@ -8,6 +8,8 @@ import java.util.Random;
  * changes have been made by BenL.
  * 
  * @author BenL
+ * @author jakeneely0
+ * 
  *
  */
 public class RandomPlus extends Random 
@@ -26,6 +28,20 @@ public class RandomPlus extends Random
 
 		return k - 1;
 	}
+	
+	public double nextExponential(double lambda) {
+		double L = Math.exp(-lambda);
+		double p = 1.0;
+		int j = 0;
+		
+		do{
+			j++;
+			p *= nextDouble();
+		}
+		while (p>L);
+		return j-1;
+	}
+	
 	
 	public int[] nextPermutation(int n)
 	{
