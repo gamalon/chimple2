@@ -34,7 +34,7 @@ public class ChimpPoisson extends Monkey<Integer> {
 	public Integer propose() {
 		// Use Bactrian kernel
 		int var = (int) Math.ceil(lambda*jump);
-		double[] probs = new double[value+var];
+		double[] probs = new double[value+2*var];
 		
 		// Set up triangle discrete distribution
 		for(int i = -var; i <= var; i++) {
@@ -56,6 +56,7 @@ public class ChimpPoisson extends Monkey<Integer> {
 		}
 		value = newvalue;
 		return newvalue;
+
 	}
 	
 	/**
