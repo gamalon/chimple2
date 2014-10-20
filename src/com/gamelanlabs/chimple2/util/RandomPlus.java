@@ -8,7 +8,7 @@ import java.util.Random;
  * changes have been made by BenL.
  * 
  * @author BenL
- * @author jakeneely0
+ * @author jakeneely
  * 
  *
  */
