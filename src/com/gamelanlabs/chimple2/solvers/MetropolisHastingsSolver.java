@@ -118,6 +118,7 @@ public class MetropolisHastingsSolver extends Solver {
 		// Backup the cage, in case we reject. (Deep copies all the monkeys as well.)
 		MonkeyCage oldcage = zookeeper.cage.clone();
 		
+		
 		// If this isn't the first sample, create a proposal by picking a monkey uniformly
 		// and sampling from its conditional proposal kernel (regenerate()).
 		// TODO: support passing a list of probabilities for choosing which monkey to mutate.
@@ -127,6 +128,8 @@ public class MetropolisHastingsSolver extends Solver {
 		
 		// Run the program
 		zookeeper.resetTrackers();
+		zookeeper.cage.internalenergy=0;
+		
 		Object result = program.run(arguments);
 		zookeeper.killUntouched();
 		
