@@ -8,8 +8,5 @@ Then, add a cost function, either inline using `addEnergy()` inside your probabi
 
 Finally, write a `public static void main(String[] args)` function that instantiates your program class and calls `MHQuery()`, and run the class.
 
-**MATLAB Developer Quick Start**:
-Clone the repository and run `startup.m` in the base directory. Write a MATLAB function that implements your probabilistic program, calling `addEnergy()` to condition on data. Then write a MATLAB script that calls `chimplify` on your program, passing in arguments, burn-in iterations, sample iterations, and spacing iterations, and run that script.
-
 **Latest Release**:
 https://github.com/gamelanlabs/chimple2/releases/latest
