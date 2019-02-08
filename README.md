@@ -18,5 +18,5 @@ mvn -U clean package
 
 **Running**
 ```$bash
-java -jar target/chimple2-1.0.0-jar-with-dependencies.jar
+java -jar target/chimple2-1.0.0-jar-with-dependencies.jar "/the/path/to/input/image.jpg"
 ```
