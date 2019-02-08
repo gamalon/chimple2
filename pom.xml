@@ -56,7 +56,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>com.gamelanlabs.chimple2.demos.DemoChooser</mainClass>
+              <mainClass>com.gamelanlabs.chimple2.demos.Bezier</mainClass>
             </manifest>
           </archive>
         </configuration>
