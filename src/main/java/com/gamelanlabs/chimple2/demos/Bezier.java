@@ -81,34 +81,15 @@ public class Bezier extends Demo {
 			
 		for (int i=0; i<numPoints; i++) {
 			// Anchor points of bezier - stay in window
-			//int x1 = (int) ((chimpRand("x1"+i) * (width + 1)));
-		    //int y1 = (int) ((chimpRand("y1"+i) * (height + 1)));
-
-			int x1 = (int) ((chimpNormal("x1"+i, .5, .25) * (width + 1)));
-			int y1 = (int) ((chimpNormal("y1"+i, .5, .25) * (height + 1)));
+			int x1 = (int) ((chimpRand("x1"+i) * (width + 1)));
+		    int y1 = (int) ((chimpRand("y1"+i) * (height + 1)));
 			
-			if (x1 < 0){
-				x1 = 0;
-			};
-
-			if (x1 > width){
-				x1 = width;
-			};
-
-			if (y1 < 0){
-				y1 = 0;
-			};
-
-			if (y1 > height){
-				y1 = height;
-			};
-
-			//Control points of bezier - larger area
+		    //Control points of bezier - larger area
 		    //int x2 = (int) ((chimpRand("x2"+i) * 2*(width + 1)-width/2));
 		    //int y2 = (int) ((chimpRand("y2"+i) * 2*(height + 1)-height/2));
 		    int x2 = (int) ((chimpRand("x2"+i) * (width + 1)));
 		    int y2 = (int) ((chimpRand("y2"+i) * (height + 1)));
-
+		    
 		    // Color and transparency - should be easy to turn on/off
 		    //int c1 = (int) ((chimpRand("c1"+i) * 255));
 		    //int c1 = 0;
@@ -338,7 +319,7 @@ public class Bezier extends Demo {
 			int[] targetBuf = ((DataBufferInt) targetImg.getRaster().getDataBuffer()).getData();
 			int x, y;
 			int r, g, b;
-
+		     
 			for (int i = 0; i < width * height; ++i) {
 				x = arrowsBuf[i];
 				y = targetBuf[i];

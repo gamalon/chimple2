@@ -6,3 +6,7 @@
 *.idea*
 *.class
 bin/
+classes/
+lib/
+target/
+
