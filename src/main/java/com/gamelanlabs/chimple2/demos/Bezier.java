@@ -225,7 +225,7 @@ public class Bezier extends Demo {
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(null, "Using default image file.");
 				try {
-					tempImage = ImageIO.read(getClass().getResourceAsStream("/resources/benvigoda.jpg"));
+					tempImage = ImageIO.read(getClass().getResourceAsStream("/benvigoda.jpg"));
 				} catch(IOException e2) {
 					JOptionPane.showMessageDialog(null, "Error loading default image file.");
 					return;
