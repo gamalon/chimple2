@@ -10,6 +10,8 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -25,6 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.apache.commons.io.FilenameUtils;
 import processing.core.PGraphics;
 
 import com.gamelanlabs.chimple2.visualization.EmbedFrame;
@@ -38,8 +41,6 @@ import com.gamelanlabs.chimple2.visualization.EmbedFrame;
  *
  */
 public class Bezier extends Demo {
-	private final int width = 1024;
-	private final int height = 768;
 	protected int numPoints = 100;
 	//private final int eyePoints = 100;
 	protected ScribbleDraw _gibberish;
@@ -54,8 +55,7 @@ public class Bezier extends Demo {
 	}
 	
 	public Bezier() {
-		_gibberish = new ScribbleDraw("src/resources/benvigoda.jpg");
-
+		_gibberish = new ScribbleDraw("/benvigoda.jpg");
 	}
 	
 	/**
@@ -81,34 +81,15 @@ public class Bezier extends Demo {
 			
 		for (int i=0; i<numPoints; i++) {
 			// Anchor points of bezier - stay in window
-			//int x1 = (int) ((chimpRand("x1"+i) * (width + 1)));
-		    //int y1 = (int) ((chimpRand("y1"+i) * (height + 1)));
-
-			int x1 = (int) ((chimpNormal("x1"+i, .5, .25) * (width + 1)));
-			int y1 = (int) ((chimpNormal("y1"+i, .5, .25) * (height + 1)));
+			  int x1 = (int) ((chimpRand("x1"+i) * (_gibberish.getWidth() + 1)));
+		    int y1 = (int) ((chimpRand("y1"+i) * (_gibberish.getHeight() + 1)));
 			
-			if (x1 < 0){
-				x1 = 0;
-			};
-
-			if (x1 > width){
-				x1 = width;
-			};
-
-			if (y1 < 0){
-				y1 = 0;
-			};
-
-			if (y1 > height){
-				y1 = height;
-			};
-
-			//Control points of bezier - larger area
+		    //Control points of bezier - larger area
 		    //int x2 = (int) ((chimpRand("x2"+i) * 2*(width + 1)-width/2));
 		    //int y2 = (int) ((chimpRand("y2"+i) * 2*(height + 1)-height/2));
-		    int x2 = (int) ((chimpRand("x2"+i) * (width + 1)));
-		    int y2 = (int) ((chimpRand("y2"+i) * (height + 1)));
-
+		    int x2 = (int) ((chimpRand("x2"+i) * (_gibberish.getWidth() + 1)));
+		    int y2 = (int) ((chimpRand("y2"+i) * (_gibberish.getHeight() + 1)));
+		    
 		    // Color and transparency - should be easy to turn on/off
 		    //int c1 = (int) ((chimpRand("c1"+i) * 255));
 		    //int c1 = 0;
@@ -214,11 +195,32 @@ public class Bezier extends Demo {
 		public ScribbleDraw(String f) {
 			filename = f;
 
+			BufferedImage tempImage = null;
+			try {
+				tempImage = ImageIO.read(new File(filename));
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(null, "Using default image file.");
+				try {
+					tempImage = ImageIO.read(getClass().getResourceAsStream("/benvigoda.jpg"));
+				} catch(IOException e2) {
+					JOptionPane.showMessageDialog(null, "Error loading default image file.");
+					return;
+				}
+			}		
+			targetImg = toCompatibleImage(tempImage);
+
 			frameMain.setIgnoreRepaint(true);
 			frameMain.setDefaultCloseOperation(EmbedFrame.EXIT_ON_CLOSE);
 
 			canvas.setIgnoreRepaint(true);
-			canvas.setSize(1024, 768);
+			canvas.setSize(targetImg.getWidth(), targetImg.getHeight());
+
+			frameMain.addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent event) {
+					writeCanvasToFile();
+					System.exit(0);
+				}
+			});
 
 			frameMain.add(canvas);
 			frameMain.pack();
@@ -232,34 +234,28 @@ public class Bezier extends Demo {
 			gd = ge.getDefaultScreenDevice();
 			gc = gd.getDefaultConfiguration();
 			// Create off-screen drawing surface
-			bi = gc.createCompatibleImage(1024, 768);
-			
+			bi = gc.createCompatibleImage(targetImg.getWidth(), targetImg.getHeight());
+
 			// Objects needed for rendering...
 			background = Color.WHITE;
 			rand = new Random();
+		}
 
-			BufferedImage tempImage = null;
-			try {
-				tempImage = ImageIO.read(new File(filename));
-			} catch (IOException e) {
-				JOptionPane.showMessageDialog(null, "Using default image file.");
-				try {
-					tempImage = ImageIO.read(getClass().getResourceAsStream("/resources/benvigoda.jpg"));
-				} catch(IOException e2) {
-					JOptionPane.showMessageDialog(null, "Error loading default image file.");
-					return;
-				}
-			}		
-			targetImg = toCompatibleImage(tempImage);
+		public int getWidth() {
+			return targetImg.getWidth();
+		}
+
+		public int getHeight() {
+			return targetImg.getHeight();
 		}
 
 		public void draw(int[][] points, int numPoints) {
 
-				g2d = frameMain.getEmbed(1024,768);
+				g2d = frameMain.getEmbed(targetImg.getWidth(), targetImg.getHeight());
 
 				// clear back buffer...
 				g2d.fill(Color.WHITE.getRGB());;
-				g2d.rect(0, 0, 1024, 768);
+				g2d.rect(0, 0, targetImg.getWidth(), targetImg.getHeight());
 				
 				
 				int strokeSize = 6;
@@ -328,7 +324,18 @@ public class Bezier extends Demo {
 				Thread.yield();
 
 		}
-		
+
+		protected void writeCanvasToFile() {
+			String extension = FilenameUtils.getExtension(filename);
+			String newFileName = filename.replace(extension, "bezier.png");
+			System.out.println("saving image as " + newFileName);
+			try {
+				ImageIO.write(bi, "png", new File(newFileName));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
 		public double getl2() {
 			int width = bi.getWidth();
 			int height = bi.getHeight();
@@ -338,7 +345,7 @@ public class Bezier extends Demo {
 			int[] targetBuf = ((DataBufferInt) targetImg.getRaster().getDataBuffer()).getData();
 			int x, y;
 			int r, g, b;
-
+		     
 			for (int i = 0; i < width * height; ++i) {
 				x = arrowsBuf[i];
 				y = targetBuf[i];
@@ -393,7 +400,12 @@ public class Bezier extends Demo {
 	 * @param	args	Command-line arguments
 	 */
 	public static void main(String [] args) {
-		Demo.runDemo(new Bezier(), args);
+		if (args.length == 1) {
+			Demo.runDemo(new Bezier(args[0]), new String[0]);
+		} else {
+			System.out.println("must give the path to an image file");
+			System.exit(1);
+		}
 	}
 	
 	/**
